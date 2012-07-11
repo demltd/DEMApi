@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="dem-api" default="build" basedir="./">
+
+    <target name="getProps">
+       
+       <property file="${basedir}/build.properties" />
+ 
+       <condition property="script-suffix" value=".bat" else="">
+            <os family="windows" />
+       </condition>
+    
+       <echo message="---- Build Properties ----" />
+       <echo message="" />
+       
+       <echo message="Property file is ${basedir}/build.properties" />
+       
+       <echo message="" />
+       <echo message="---- DEM API Properties ----" />
+       <echo message="" />  
+
+    </target>
+		
+	<target name="tests" depends="getProps">
+
+		<!-- for the tests -->
+		<copy file="${basedir}/tests/TestHelper.php.dist"
+	         tofile="${basedir}/tests/TestHelper.php" overwrite="true" />
+	   <replace file="${basedir}/tests/TestHelper.php" token="@ZEND_PATH@" value="${zend.dir}" />
+	   <replace file="${basedir}/tests/TestHelper.php" token="@API_KEY@" value="${api.key}" />
+	   <replace file="${basedir}/tests/TestHelper.php" token="@API_SECRET@" value="${api.secret}" />
+
+		<exec dir="${basedir}" executable="${phpunit.dir}/phpunit" failonerror="true">
+              <arg line="tests"/>
+           </exec>
+	</target>
+	
+	<target name="coverage" depends="getProps">
+
+		<exec dir="${basedir}" executable="${phpunit.dir}/phpunit" failonerror="true">
+        	<arg line="--configuration phpunit.xml --coverage-html ./build/report"/>
+        </exec>	
+	</target>
+
+    <target name="clean">
+    
+    	<delete dir="${basedir}/build" />
+    
+    <delete dir="${basedir}/build/logs" />
+        <delete dir="${basedir}/build/report" />
+	<delete dir="${deploy.dir}" />
+    </target>
+
+    <!--target name="build" depends="buildPreparation,unit.tests,deploy"/-->
+
+</project>
