@@ -29,12 +29,18 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
     }
     
     public function testUpdateProvider()
-    {
-        $this->fail();
-        
+    {        
         $json = $this->_api->getProvider(1);
         
         $this->assertNotNull($json);
+        
+        $provider = json_decode($json);
+        
+        $this->assertEquals('University of Derby', $provider->title);
+        
+        $provider->title = 'Derby University';
+        
+        $this->_api->updateProvider($provider, 1);
         
     }
     

@@ -56,6 +56,18 @@ class DEMAPI
         return $this->_call('provider', 'get', $pid);
     }
     
+    /**
+    *  Updates provider associated with given id with the json data.
+    *
+    *  @param $provider json string
+    *  @param $pid
+    *  @throws DEMAPI_IllegalArgumentException
+    */
+    public function updateProvider($provider, $pid)
+    {
+        
+    }
+    
     private function _call($resource, $method, $id = null)
     {
         $url = $this->_apiUrl . '/' . $resource . '/';
