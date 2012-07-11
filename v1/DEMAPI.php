@@ -59,32 +59,34 @@ class DEMAPI
     /**
     *  Updates provider associated with given id with the json data.
     *
-    *  @param $provider json string
+    *  @param $json json representation of provider
     *  @param $pid
     *  @throws DEMAPI_IllegalArgumentException
     */
-    public function updateProvider($provider, $pid)
+    public function updateProvider($json, $pid)
     {
+        if($json === null){
+            throw new DEMAPI_IllegalArgumentException('provider was null');
+        }
         
+        if(!is_string($json)){
+            throw new DEMAPI_IllegalArgumentException('provider was not a json
+                string');
+        }
+        
+        if($pid === null){
+            throw new DEMAPI_IllegalArgumentException('provider is was null');
+        }
+        
+        return $this->_call('provider', 'put', $pid, $json);
     }
     
-    private function _call($resource, $method, $id = null)
+    private function _call($resource, $method, $id = null, $json = null)
     {
         $url = $this->_apiUrl . '/' . $resource . '/';
         
         if($id !== null){
             $url .= $id . '/';
-        }
-
-        $ch = curl_init();
-
-        // set method
-        switch($method){
-            case 'get':
-                curl_setopt($ch, CURLOPT_HTTPGET, true);
-                break;
-            default:
-                throw new Exception('Invalid http method');
         }
         
         date_default_timezone_set('UTC');
@@ -93,13 +95,30 @@ class DEMAPI
         
         $params = "apiKey=$this->_apiKey&timestamp=$date&signature=" . 
             $this->_sign($resource, $method, $id, $date);
-        
+                    
         $url .= "?$params";
+
+        $ch = curl_init($url);
+
+        // set method
+        switch($method){
+            case 'get':
+                curl_setopt($ch, CURLOPT_HTTPGET, true);
+                break;
+            case 'put':
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+                break;
+            default:
+                throw new Exception('Invalid http method');
+        }
+        
+        if($json !== null){
+            $fields = array('json' => $json);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
+        }
         
         curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-        curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array ('Accept: ' . $this->_acceptType));
         
         $output = curl_exec($ch);
 
@@ -112,7 +131,7 @@ class DEMAPI
     *  Signs the api request with your secret key.
     */
     private function _sign($resource, $method, $id, $date)
-    {        
+    {
         $params = array(
             'module' => 'v1',
             'controller' => $resource,
@@ -128,3 +147,5 @@ class DEMAPI
         return sha1($this->_apiKey . $date . implode($params) . $this->_secret);
     }
 }
+
+class DEMAPI_IllegalArgumentException extends Exception{}

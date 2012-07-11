@@ -38,12 +38,43 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
         
         $this->assertEquals('University of Derby', $provider->title);
         
+        try{
+            $this->_api->updateProvider(null, null);
+            $this->fail();
+        }catch(DEMAPI_IllegalArgumentException $e){
+            // expected
+        }
+        
+        try{
+            $this->_api->updateProvider(1, null);
+            $this->fail();
+        }catch(DEMAPI_IllegalArgumentException $e){
+            // expected
+        }
+        
+        try{
+            $this->_api->updateProvider('1', null);
+            $this->fail();
+        }catch(DEMAPI_IllegalArgumentException $e){
+            // expected
+        }
+        
         $provider->title = 'Derby University';
         
-        $this->_api->updateProvider($provider, 1);
+        $this->_api->updateProvider(json_encode($provider), 1);
         
+        $json = $this->_api->getProvider(1);
+        
+        $this->assertNotNull($json);
+        
+        $provider = json_decode($json);
+        
+        $this->assertEquals('Derby University', $provider->title);
+        
+        $provider->title = 'University of Derby';
+        
+        $this->_api->updateProvider(json_encode($provider), 1);
+        
+        $this->assertEquals('University of Derby', $provider->title);
     }
-    
-    
-    
 }
