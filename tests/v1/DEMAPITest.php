@@ -80,6 +80,13 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
 
     public function testGetCourses()
     {
+        try{
+            $this->_api->getProviderCourses(null);
+            $this->fail();
+        }catch(DEMAPI_IllegalArgumentException $e){
+            // expected
+        }
+        
         $json = $this->_api->getProviderCourses(1);
         
         $courses = json_decode($json);
@@ -96,5 +103,16 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
         $types = json_decode($json);
         
         $this->assertTrue(count($types) > 40);
+    }
+    
+    public function testGetSubjectAreas()
+    {
+        $json = $this->_api->getSubjectAreas();
+        
+        $this->assertNotNull($json);
+        
+        $subjects = json_decode($json);
+        
+        $this->assertTrue(count($subjects) > 50);
     }
 }

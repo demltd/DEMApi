@@ -90,6 +90,11 @@ class DEMAPI
     */
     public function getProviderCourses($pid)
     {
+        if($pid === null){
+            throw new DEMAPI_IllegalArgumentException('provider id cannot 
+                be null');
+        }
+        
         return $this->_call('course', 'get', null, null, array('pid' => (string) $pid));
     }
     
@@ -101,6 +106,16 @@ class DEMAPI
     public function getAwardTypes()
     {
         return $this->_call('award', 'get');
+    }
+    
+    /** 
+    *  Returns all subject areas
+    *
+    *  @return json string
+    */
+    public function getSubjectAreas()
+    {
+        return $this->_call('subject', 'get');
     }
     
     private function _call($resource, $method, $id = null, $json = null,
