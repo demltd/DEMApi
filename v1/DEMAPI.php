@@ -81,7 +81,20 @@ class DEMAPI
         return $this->_call('provider', 'put', $pid, $json);
     }
     
-    private function _call($resource, $method, $id = null, $json = null)
+    /**
+    *  Returns the courses associated with the provider id.
+    *
+    *  @param $pid provider id
+    *  @return json string
+    *  @throws DEMAPI_UnauthorizedAccessException
+    */
+    public function getProviderCourses($pid)
+    {
+        return $this->_call('course', 'get', null, null, array('pid' => (string) $pid));
+    }
+    
+    private function _call($resource, $method, $id = null, $json = null,
+        $extraParams = array())
     {
         $url = $this->_apiUrl . '/' . $resource . '/';
         
@@ -94,9 +107,13 @@ class DEMAPI
         $date = $date->format('Y-m-dH:i:s');
         
         $params = "apiKey=$this->_apiKey&timestamp=$date&signature=" . 
-            $this->_sign($resource, $method, $id, $date);
+            $this->_sign($resource, $method, $id, $date, $extraParams);
                     
         $url .= "?$params";
+        
+        foreach(array_keys($extraParams) as $k){
+            $url .= "&$k=" . $extraParams[$k];
+        }        
 
         $ch = curl_init($url);
 
@@ -130,15 +147,17 @@ class DEMAPI
     /**
     *  Signs the api request with your secret key.
     */
-    private function _sign($resource, $method, $id, $date)
+    private function _sign($resource, $method, $id, $date, 
+        $extraParams = array())
     {
         $params = array(
-            'module' => 'v1',
-            'controller' => $resource,
-            'action' => $method,
             'apiKey' => $this->_apiKey,
             'timestamp' => $date,
         );
+        
+        foreach(array_keys($extraParams) as $k){
+            $params[$k] = $extraParams[$k];
+        }
         
         if($id !== null){
             $params['id'] = (string) $id;

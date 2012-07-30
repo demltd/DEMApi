@@ -29,7 +29,7 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
     }
     
     public function testUpdateProvider()
-    {        
+    {
         $json = $this->_api->getProvider(1);
         
         $this->assertNotNull($json);
@@ -76,5 +76,14 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
         $this->_api->updateProvider(json_encode($provider), 1);
         
         $this->assertEquals('University of Derby', $provider->title);
+    }
+
+    public function testGetCourses()
+    {
+        $json = $this->_api->getProviderCourses(1);
+        
+        $courses = json_decode($json);
+        
+        $this->assertTrue(count($courses) > 200);
     }
 }
