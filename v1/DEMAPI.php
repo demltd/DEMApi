@@ -93,6 +93,16 @@ class DEMAPI
         return $this->_call('course', 'get', null, null, array('pid' => (string) $pid));
     }
     
+    /**
+    *  Returns all award types
+    *
+    *  @return json string
+    */
+    public function getAwardTypes()
+    {
+        return $this->_call('award', 'get');
+    }
+    
     private function _call($resource, $method, $id = null, $json = null,
         $extraParams = array())
     {

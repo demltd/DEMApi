@@ -86,4 +86,15 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
         
         $this->assertTrue(count($courses) > 200);
     }
+    
+    public function testGetAwardTypes()
+    {
+        $json = $this->_api->getAwardTypes();
+        
+        $this->assertNotNull($json);
+        
+        $types = json_decode($json);
+        
+        $this->assertTrue(count($types) > 40);
+    }
 }
