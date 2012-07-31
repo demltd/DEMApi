@@ -86,7 +86,7 @@ class DEMAPI
     *
     *  @param $pid provider id
     *  @return json string
-    *  @throws DEMAPI_UnauthorizedAccessException
+    *  @throws DEMAPI_IllegalArgumentException
     */
     public function getProviderCourses($pid)
     {
@@ -96,6 +96,23 @@ class DEMAPI
         }
         
         return $this->_call('course', 'get', null, null, array('pid' => (string) $pid));
+    }
+    
+    /**
+    *  Returns the course associated with the course id.
+    *
+    *  @param $cid course id
+    *  @return json string
+    *  @throws DEMAPI_IllegalArgumentException
+    */
+    public function getCourse($cid)
+    {
+        if($cid === null){
+            throw new DEMAPI_IllegalArgumentException('course id cannot
+                be null');
+        }
+        
+        return $this->_call('course', 'get', $cid);
     }
     
     /**

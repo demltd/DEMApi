@@ -94,6 +94,27 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
         $this->assertTrue(count($courses) > 200);
     }
     
+    public function testGetCourse()
+    {
+        try{
+            $this->_api->getCourse(null);
+            $this->fail();
+        }catch(DEMAPI_IllegalArgumentException $e){
+            // expected
+        }
+        
+        $json = $this->_api->getCourse(10);
+        
+        $this->assertNotNull($json);
+        
+        $course = json_decode($json);
+        
+        $this->assertTrue(isset($course->title));
+        
+        $this->assertEquals('Architectural Technology and Digital Innovation (K101)',
+            $course->title);
+    }
+    
     public function testGetAwardTypes()
     {
         $json = $this->_api->getAwardTypes();
