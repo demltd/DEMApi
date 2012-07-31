@@ -3,6 +3,9 @@ require_once dirname(__FILE__) . "/../TestHelper.php";
 
 class DEMAPITest extends PHPUnit_Framework_TestCase{
     
+    /**
+     * @var DEMAPI
+     */
     private $_api;
     
     public function __construct()
@@ -113,6 +116,39 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
         
         $this->assertEquals('Architectural Technology and Digital Innovation (K101)',
             $course->title);
+    }
+    
+    public function testUpdateCourse()
+    {
+        try{
+            $this->_api->updateCourse(null, null, null);
+            $this->fail();
+        }catch(DEMAPI_IllegalArgumentException $e){
+            // expected
+        }
+        
+        try{
+            $this->_api->updateCourse(1, null, null);
+            $this->fail();
+        }catch(DEMAPI_IllegalArgumentException $e){
+            // expected
+        }
+        
+        $json = $this->_api->getCourse(8);
+        
+        $course = json_decode($json);
+        
+        $this->assertEquals('Applied Social Work (L510)', $course->title);
+        
+        $this->assertEquals(1, $course->active);
+        
+        echo $this->_api->updateCourse(8, 'active', 0);
+        
+        $json = $this->_api->getCourse(8);
+        
+        $course = json_decode($json);
+        
+        $this->assertEquals(0, $course->active);
     }
     
     public function testGetAwardTypes()

@@ -116,6 +116,33 @@ class DEMAPI
     }
     
     /**
+     * Update a course field
+     * 
+     * @param type $cid
+     * @param type $field
+     * @param type $value
+     */
+    public function updateCourse($cid, $field, $value)
+    {
+        if($cid === null){
+            throw new DEMAPI_IllegalArgumentException('course id cannot
+                be null');
+        }
+        
+        if($field === null){
+            throw new DEMAPI_IllegalArgumentException('course field cannot
+                be null');
+        }
+        
+        $json = json_encode(array(
+            'field' => $field,
+            'value' => $value,
+        ));
+        
+        return $this->_call('course', 'put', $cid, $json);
+    }
+    
+    /**
     *  Returns all award types
     *
     *  @return json string
@@ -155,7 +182,7 @@ class DEMAPI
         
         foreach(array_keys($extraParams) as $k){
             $url .= "&$k=" . $extraParams[$k];
-        }        
+        }
 
         $ch = curl_init($url);
 
