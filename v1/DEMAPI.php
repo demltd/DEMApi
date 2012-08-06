@@ -78,7 +78,7 @@ class DEMAPI
             throw new DEMAPI_IllegalArgumentException('provider is was null');
         }
         
-        return $this->_call('provider', 'put', $pid, $json);
+        return $this->_call('provider', 'put', $pid, array());
     }
     
     /**
@@ -95,7 +95,7 @@ class DEMAPI
                 be null');
         }
         
-        return $this->_call('course', 'get', null, null, array('pid' => (string) $pid));
+        return $this->_call('course', 'get', null, array('pid' => (string) $pid));
     }
     
     /**
@@ -122,7 +122,7 @@ class DEMAPI
      * @param type $field
      * @param type $value
      */
-    public function updateCourse($cid, $field, $value)
+    public function updateCourse($cid, array $params)
     {
         if($cid === null){
             throw new DEMAPI_IllegalArgumentException('course id cannot
@@ -139,7 +139,25 @@ class DEMAPI
             'value' => $value,
         ));
         
-        return $this->_call('course', 'put', $cid, $json);
+        return $this->_call('course', 'put', $cid, array());
+    }
+    
+    const VARIATION_AWARD_TYPES_PARAM_NAME = 'award_types';
+    
+    public function updateCourseVariation($vid, array $params)
+    {
+        if($vid === null){
+            throw new DEMAPI_IllegalArgumentException('variation id cannot be
+                null');
+        }
+        
+        if(count($params) < 1){
+            throw new DEMAPI_IllegalArgumentException('variation update params 
+                must be great than 0');
+        }
+        
+        return $this->_call('variation', 'put', $vid, $params);
+        
     }
     
     /**
@@ -162,8 +180,16 @@ class DEMAPI
         return $this->_call('subject', 'get');
     }
     
-    private function _call($resource, $method, $id = null, $json = null,
-        $extraParams = array())
+    /**
+     * 
+     * @param string $resource
+     * @param string $method
+     * @param int $id
+     * @param array $params
+     * @return type
+     * @throws Exception
+     */
+    private function _call($resource, $method, $id = null, $params = array())
     {
         $url = $this->_apiUrl . '/' . $resource . '/';
         
@@ -175,14 +201,10 @@ class DEMAPI
         $date = new DateTime();        
         $date = $date->format('Y-m-dH:i:s');
         
-        $params = "apiKey=$this->_apiKey&timestamp=$date&signature=" . 
-            $this->_sign($resource, $method, $id, $date, $extraParams);
+        $urlparams = "apiKey=$this->_apiKey&timestamp=$date&signature=" . 
+            $this->_sign($resource, $method, $id, $date, $params);
                     
-        $url .= "?$params";
-        
-        foreach(array_keys($extraParams) as $k){
-            $url .= "&$k=" . $extraParams[$k];
-        }
+        $url .= "?$urlparams";
 
         $ch = curl_init($url);
 
@@ -193,16 +215,12 @@ class DEMAPI
                 break;
             case 'put':
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
                 break;
             default:
                 throw new Exception('Invalid http method');
         }
-        
-        if($json !== null){
-            $fields = array('json' => $json);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
-        }
-        
+              
         curl_setopt($ch, CURLOPT_TIMEOUT, 10);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         

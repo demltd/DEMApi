@@ -149,6 +149,44 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
         $course = json_decode($json);
         
         $this->assertEquals(0, $course->active);
+        
+        $this->_api->updateCourse(8, 'active', 1);
+    }
+    
+    public function testUpdateCourseVariation()
+    {
+        try{
+            $this->_api->updateCourseVariation(null, array());
+            $this->fail();
+            
+        }catch(DEMAPI_IllegalArgumentException $e){
+            // expected
+        }
+        
+        try{
+            $this->_api->updateCourseVariation(1, array());
+            $this->fail();
+        }catch(DEMAPI_IllegalArgumentException $e){
+            // expected
+        }
+        
+        $json = $this->_api->getCourse(8);
+        
+        $course = json_decode($json);
+        
+        $this->assertEquals(array('LOS-UG-BA', 'LOS-UG-BAH'), 
+            $course->variations[0]->awardTypes);
+        
+        $this->_api->updateCourseVariation($course->variations[0]->id, 
+            array(DEMAPI::VARIATION_AWARD_TYPES_PARAM_NAME => 
+                'LOS-UG-BA,LOS-UG-BAH,LOS-UG-DIP'));
+        
+        $json = $this->_api->getCourse(8);
+        
+        $course = json_decode($json);
+        
+        $this->assertEquals(array('LOS-UG-BA','LOS-UG-BAH','LOS-UG-DIP'),
+            $course->variations[0]->awardTypes);
     }
     
     public function testGetAwardTypes()
@@ -170,6 +208,6 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
         
         $subjects = json_decode($json);
         
-        $this->assertTrue(count($subjects) > 50);
+        $this->assertTrue(count($subjects) > 300);
     }
 }
