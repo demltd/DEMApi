@@ -57,28 +57,30 @@ class DEMAPI
     }
     
     /**
-    *  Updates provider associated with given id with the json data.
-    *
-    *  @param $json json representation of provider
-    *  @param $pid
-    *  @throws DEMAPI_IllegalArgumentException
-    */
-    public function updateProvider($json, $pid)
-    {
-        if($json === null){
-            throw new DEMAPI_IllegalArgumentException('provider was null');
-        }
-        
-        if(!is_string($json)){
-            throw new DEMAPI_IllegalArgumentException('provider was not a json
-                string');
-        }
-        
+     * Updates provider associated with given id .
+     * 
+     * @param type $pid
+     * @param array $params
+     * @return type
+     * @throws DEMAPI_IllegalArgumentException
+     */
+    public function updateProvider($pid, array $params)
+    {   
         if($pid === null){
             throw new DEMAPI_IllegalArgumentException('provider is was null');
         }
         
-        return $this->_call('provider', 'put', $pid, array());
+        if(!is_int($pid)){
+            throw new DEMAPI_IllegalArgumentException('provider id must be an 
+                integer');
+        }
+        
+        if(count($params) < 1){
+            throw new DEMAPI_IllegalArgumentException('provider update params
+                must have at least one entry');
+        }
+        
+        return $this->_call('provider', 'put', $pid, $params);
     }
     
     /**
@@ -128,16 +130,6 @@ class DEMAPI
             throw new DEMAPI_IllegalArgumentException('course id cannot
                 be null');
         }
-        
-        if($field === null){
-            throw new DEMAPI_IllegalArgumentException('course field cannot
-                be null');
-        }
-        
-        $json = json_encode(array(
-            'field' => $field,
-            'value' => $value,
-        ));
         
         return $this->_call('course', 'put', $cid, array());
     }

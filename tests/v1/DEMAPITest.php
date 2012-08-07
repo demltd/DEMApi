@@ -42,29 +42,27 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
         $this->assertEquals('University of Derby', $provider->title);
         
         try{
-            $this->_api->updateProvider(null, null);
+            $this->_api->updateProvider(null, array());
             $this->fail();
         }catch(DEMAPI_IllegalArgumentException $e){
             // expected
         }
         
         try{
-            $this->_api->updateProvider(1, null);
+            $this->_api->updateProvider(1, array());
             $this->fail();
         }catch(DEMAPI_IllegalArgumentException $e){
             // expected
         }
         
         try{
-            $this->_api->updateProvider('1', null);
+            $this->_api->updateProvider('1', array('title' => 'test'));
             $this->fail();
         }catch(DEMAPI_IllegalArgumentException $e){
             // expected
         }
         
-        $provider->title = 'Derby University';
-        
-        $this->_api->updateProvider(json_encode($provider), 1);
+        $this->_api->updateProvider(1, array('title' => 'Derby University'));
         
         $json = $this->_api->getProvider(1);
         
@@ -74,9 +72,9 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
         
         $this->assertEquals('Derby University', $provider->title);
         
-        $provider->title = 'University of Derby';
+        $this->_api->updateProvider(1, array('title' => 'University of Derby'));
         
-        $this->_api->updateProvider(json_encode($provider), 1);
+        $provider = json_decode($this->_api->getProvider(1));
         
         $this->assertEquals('University of Derby', $provider->title);
     }
@@ -121,14 +119,14 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
     public function testUpdateCourse()
     {
         try{
-            $this->_api->updateCourse(null, null, null);
+            $this->_api->updateCourse(null, array());
             $this->fail();
         }catch(DEMAPI_IllegalArgumentException $e){
             // expected
         }
         
         try{
-            $this->_api->updateCourse(1, null, null);
+            $this->_api->updateCourse(1, array());
             $this->fail();
         }catch(DEMAPI_IllegalArgumentException $e){
             // expected
@@ -175,7 +173,7 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
         $course = json_decode($json);
         
         $this->assertEquals(array('LOS-UG-BA', 'LOS-UG-BAH'), 
-            $course->variations[0]->awardTypes);
+            $course->variations[0]->award_types);
         
         $this->_api->updateCourseVariation($course->variations[0]->id, 
             array(DEMAPI::VARIATION_AWARD_TYPES_PARAM_NAME => 
@@ -186,7 +184,7 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
         $course = json_decode($json);
         
         $this->assertEquals(array('LOS-UG-BA','LOS-UG-BAH','LOS-UG-DIP'),
-            $course->variations[0]->awardTypes);
+            $course->variations[0]->award_types);
     }
     
     public function testGetAwardTypes()
