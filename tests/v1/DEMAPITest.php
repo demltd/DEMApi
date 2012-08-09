@@ -48,21 +48,9 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
             // expected
         }
         
-        try{
-            $this->_api->updateProvider(1, array());
-            $this->fail();
-        }catch(DEMAPI_IllegalArgumentException $e){
-            // expected
-        }
-        
-        try{
-            $this->_api->updateProvider('1', array('title' => 'test'));
-            $this->fail();
-        }catch(DEMAPI_IllegalArgumentException $e){
-            // expected
-        }
-        
-        $this->_api->updateProvider(1, array('title' => 'Derby University'));
+        echo $this->_api->updateProvider(1, array(
+            DEMAPI::PROVIDER_TITLE_PARAM_NAME => 'Derby University'
+        ));
         
         $json = $this->_api->getProvider(1);
         
@@ -125,14 +113,9 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
             // expected
         }
         
-        try{
-            $this->_api->updateCourse(1, array());
-            $this->fail();
-        }catch(DEMAPI_IllegalArgumentException $e){
-            // expected
-        }
-        
         $json = $this->_api->getCourse(8);
+        
+        echo $json;
         
         $course = json_decode($json);
         
@@ -140,7 +123,9 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
         
         $this->assertEquals(1, $course->active);
         
-        echo $this->_api->updateCourse(8, 'active', 0);
+        echo $this->_api->updateCourse(8, array(
+            DEMAPI::COURSE_ACTIVE_PARAM_NAME => 0
+        ));
         
         $json = $this->_api->getCourse(8);
         
@@ -148,7 +133,9 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
         
         $this->assertEquals(0, $course->active);
         
-        $this->_api->updateCourse(8, 'active', 1);
+        $this->_api->updateCourse(8, array(
+            DEMAPI::COURSE_ACTIVE_PARAM_NAME => 1
+        ));
     }
     
     public function testUpdateCourseVariation()
@@ -161,21 +148,16 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
             // expected
         }
         
-        try{
-            $this->_api->updateCourseVariation(1, array());
-            $this->fail();
-        }catch(DEMAPI_IllegalArgumentException $e){
-            // expected
-        }
-        
         $json = $this->_api->getCourse(8);
+        
+        echo $json;
         
         $course = json_decode($json);
         
         $this->assertEquals(array('LOS-UG-BA', 'LOS-UG-BAH'), 
             $course->variations[0]->award_types);
         
-        $this->_api->updateCourseVariation($course->variations[0]->id, 
+        echo $this->_api->updateCourseVariation($course->variations[0]->id, 
             array(DEMAPI::VARIATION_AWARD_TYPES_PARAM_NAME => 
                 'LOS-UG-BA,LOS-UG-BAH,LOS-UG-DIP'));
         

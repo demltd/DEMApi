@@ -1,23 +1,23 @@
 <?php
 /**
-*  Library exposing the DEM api.
-*
-*  Expected usage:
-*      - Client push updates
-*      - Third party sites
-*      - Internal sites
-* 
-*  Requires an api key belonging to an administrator or client
-*  user, otherwise will throw an exception.
-*
-*  Some methods require administrator authentication.
-*/
+ * Library exposing the DEM api.
+ *
+ * Expected usage:
+ *      - Client push updates
+ *      - Third party sites
+ *      - Internal sites
+ * 
+ * Requires an api key belonging to an administrator or client
+ * user, otherwise will throw an exception.
+ *
+ * Some methods require administrator authentication.
+ */
 class DEMAPI
 {
     /**
     * This api library is for version 1 of the api.
     */
-    private $_version = 1;
+    private $_version = 'v1';
     
     /**
     *  Api returns json
@@ -40,28 +40,28 @@ class DEMAPI
     {
         $this->_apiKey = $apiKey;
         $this->_secret = $apiSecret;
-        $this->_apiUrl = 'http://api.publisher.local/v' . $this->_version;
+        $this->_apiUrl = 'http://api.publisher.local';
     }
     
     /**
-    *  Returns provider data based on the provider id.
-    * 
-    *  @param $pid Provider id
-    *  @return json string e.g '{ id: 1, title: University of Derby, 
-    *      logoSrc: http://media.demltd.com/1/logo.jpg }'
-    *  @throws DEMAPI_UnauthorizedAccessException
-    */
+     * Returns provider data in json format based on the provider id.
+     * 
+     * @param type $pid
+     * @return json
+     */
     public function getProvider($pid)
     {
         return $this->_call('provider', 'get', $pid);
     }
+    
+    const PROVIDER_TITLE_PARAM_NAME = 'title';
     
     /**
      * Updates provider associated with given id .
      * 
      * @param type $pid
      * @param array $params
-     * @return type
+     * @return json
      * @throws DEMAPI_IllegalArgumentException
      */
     public function updateProvider($pid, array $params)
@@ -70,26 +70,16 @@ class DEMAPI
             throw new DEMAPI_IllegalArgumentException('provider is was null');
         }
         
-        if(!is_int($pid)){
-            throw new DEMAPI_IllegalArgumentException('provider id must be an 
-                integer');
-        }
-        
-        if(count($params) < 1){
-            throw new DEMAPI_IllegalArgumentException('provider update params
-                must have at least one entry');
-        }
-        
         return $this->_call('provider', 'put', $pid, $params);
     }
     
     /**
-    *  Returns the courses associated with the provider id.
-    *
-    *  @param $pid provider id
-    *  @return json string
-    *  @throws DEMAPI_IllegalArgumentException
-    */
+     * Returns the courses associated with the provider id.
+     * 
+     * @param type $pid
+     * @return json
+     * @throws DEMAPI_IllegalArgumentException
+     */
     public function getProviderCourses($pid)
     {
         if($pid === null){
@@ -97,25 +87,27 @@ class DEMAPI
                 be null');
         }
         
-        return $this->_call('course', 'get', null, array('pid' => (string) $pid));
+        return $this->_call('course', 'get', null, array('pid' => $pid));
     }
     
     /**
-    *  Returns the course associated with the course id.
-    *
-    *  @param $cid course id
-    *  @return json string
-    *  @throws DEMAPI_IllegalArgumentException
-    */
+     * Returns the course associated with the course id.
+     * 
+     * @param int $cid
+     * @return json
+     * @throws DEMAPI_IllegalArgumentException
+     */
     public function getCourse($cid)
-    {
+    {   
         if($cid === null){
-            throw new DEMAPI_IllegalArgumentException('course id cannot
-                be null');
+            throw new DEMAPI_IllegalArgumentException('course id cannot be
+                null');
         }
         
         return $this->_call('course', 'get', $cid);
     }
+    
+    const COURSE_ACTIVE_PARAM_NAME = 'active';
     
     /**
      * Update a course field
@@ -131,7 +123,7 @@ class DEMAPI
                 be null');
         }
         
-        return $this->_call('course', 'put', $cid, array());
+        return $this->_call('course', 'put', $cid, $params);
     }
     
     const VARIATION_AWARD_TYPES_PARAM_NAME = 'award_types';
@@ -143,30 +135,25 @@ class DEMAPI
                 null');
         }
         
-        if(count($params) < 1){
-            throw new DEMAPI_IllegalArgumentException('variation update params 
-                must be great than 0');
-        }
-        
         return $this->_call('variation', 'put', $vid, $params);
         
     }
     
     /**
-    *  Returns all award types
-    *
-    *  @return json string
-    */
+     * Returns all award types
+     * 
+     * @return json
+     */
     public function getAwardTypes()
     {
         return $this->_call('award', 'get');
     }
     
-    /** 
-    *  Returns all subject areas
-    *
-    *  @return json string
-    */
+    /**
+     * Returns all subject areas
+     * 
+     * @return json
+     */
     public function getSubjectAreas()
     {
         return $this->_call('subject', 'get');
@@ -183,21 +170,28 @@ class DEMAPI
      */
     private function _call($resource, $method, $id = null, $params = array())
     {
-        $url = $this->_apiUrl . '/' . $resource . '/';
+        $path = '/' . $this->_version . "/$resource";
         
         if($id !== null){
-            $url .= $id . '/';
+            $path .=  "/$id";
         }
         
         date_default_timezone_set('UTC');
         $date = new DateTime();        
-        $date = $date->format('Y-m-dH:i:s');
-        
-        $urlparams = "apiKey=$this->_apiKey&timestamp=$date&signature=" . 
-            $this->_sign($resource, $method, $id, $date, $params);
-                    
-        $url .= "?$urlparams";
+        $date = $date->format(DateTime::RFC822);
+                        
+        $fields = "";
+        foreach(array_keys($params) as $p){
+            $fields .= "$p=" . $params[$p] . '&';
+        }
+       
+        $url = $this->_apiUrl . $path;
 
+        // add any get params
+        if($method === 'get'){
+            $url .= "?$fields";
+        }
+        
         $ch = curl_init($url);
 
         // set method
@@ -207,43 +201,63 @@ class DEMAPI
                 break;
             case 'put':
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
                 break;
             default:
                 throw new Exception('Invalid http method');
         }
-              
+        
+        $signature = $this->_sign($path, $method, $date);
+        
+        $headers = array(
+            'Authorization:' . API_KEY . ":$signature", 
+            "Date: $date",
+        );
+        
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_TIMEOUT, 10);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         
         $output = curl_exec($ch);
-
+        
+        $httpStatusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        
         curl_close($ch);
+        
+        switch ($httpStatusCode) {
+            case '401':
+                throw new DEMAPI_UnauthorizedAccessException($output);
+                break;
+            case '400':
+                throw new DEMAPI_IllegalArgumentException($output);
+                break;
+            case '500':
+                throw new DEMAPI_ServerErrorException('There was a problem handling
+                    your request, please try again later');
+                break;
+
+            default:
+                break;
+        }
         
         return $output;
     }
     
+
     /**
-    *  Signs the api request with your secret key.
-    */
-    private function _sign($resource, $method, $id, $date, 
-        $extraParams = array())
-    {
-        $params = array(
-            'apiKey' => $this->_apiKey,
-            'timestamp' => $date,
-        );
-        
-        foreach(array_keys($extraParams) as $k){
-            $params[$k] = $extraParams[$k];
-        }
-        
-        if($id !== null){
-            $params['id'] = (string) $id;
-        }
-        
-        return sha1($this->_apiKey . $date . implode($params) . $this->_secret);
+     * Signs the api request with your secret key.
+     * 
+     * @param type $path
+     * @param type $method
+     * @param type $date
+     * @return type
+     */
+    private function _sign($path, $method, $date)
+    {        
+        return sha1($path . $method . $date . $this->_secret);
     }
 }
 
 class DEMAPI_IllegalArgumentException extends Exception{}
+class DEMAPI_UnauthorizedAccessException extends Exception{}
+class DEMAPI_ServerErrorException extends Exception{}
