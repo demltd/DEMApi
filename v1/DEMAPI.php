@@ -195,8 +195,6 @@ class DEMAPI
         $url = $this->_apiUrl . $path;
         
         $ch = curl_init($url);
-        
-        echo $url;
 
         // set method
         switch($method){
