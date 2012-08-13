@@ -51,7 +51,7 @@ class DEMAPI
      */
     public function getProvider($pid)
     {
-        return $this->_call('provider', 'get', $pid);
+        return $this->_call("providers/$pid", 'get');
     }
     
     const PROVIDER_TITLE_PARAM_NAME = 'title';
@@ -62,15 +62,10 @@ class DEMAPI
      * @param type $pid
      * @param array $params
      * @return json
-     * @throws DEMAPI_IllegalArgumentException
      */
     public function updateProvider($pid, array $params)
     {   
-        if($pid === null){
-            throw new DEMAPI_IllegalArgumentException('provider is was null');
-        }
-        
-        return $this->_call('provider', 'put', $pid, $params);
+        return $this->_call("providers/$pid", 'put', $params);
     }
     
     /**
@@ -78,33 +73,22 @@ class DEMAPI
      * 
      * @param type $pid
      * @return json
-     * @throws DEMAPI_IllegalArgumentException
      */
     public function getProviderCourses($pid)
     {
-        if($pid === null){
-            throw new DEMAPI_IllegalArgumentException('provider id cannot 
-                be null');
-        }
-        
-        return $this->_call('course', 'get', null, array('pid' => $pid));
+        return $this->_call("providers/$pid/courses", 'get');
     }
     
     /**
      * Returns the course associated with the course id.
      * 
+     * @param int $pid
      * @param int $cid
      * @return json
-     * @throws DEMAPI_IllegalArgumentException
      */
-    public function getCourse($cid)
-    {   
-        if($cid === null){
-            throw new DEMAPI_IllegalArgumentException('course id cannot be
-                null');
-        }
-        
-        return $this->_call('course', 'get', $cid);
+    public function getCourse($pid, $cid)
+    {           
+        return $this->_call("providers/$pid/courses/$cid", 'get');
     }
     
     const COURSE_ACTIVE_PARAM_NAME = 'active';
@@ -112,31 +96,52 @@ class DEMAPI
     /**
      * Update a course field
      * 
-     * @param type $cid
-     * @param type $field
-     * @param type $value
+     * @param int $pid
+     * @param int $cid
+     * @param array $params
      */
-    public function updateCourse($cid, array $params)
+    public function updateCourse($pid, $cid, array $params)
     {
-        if($cid === null){
-            throw new DEMAPI_IllegalArgumentException('course id cannot
-                be null');
-        }
-        
-        return $this->_call('course', 'put', $cid, $params);
+        return $this->_call("providers/$pid/courses/$cid", 'put', $params);
+    }
+    
+    /**
+     * 
+     * @param int $pid
+     * @param int $cid
+     * @return type
+     */
+    public function getCourseVariations($pid, $cid)
+    {
+        return $this->_call("providers/$pid/courses/$cid/variations", 'get');
+    }
+    
+    /**
+     * 
+     * @param type $pid
+     * @param type $cid
+     * @param type $vid
+     * @return type
+     */
+    public function getVariation($pid, $cid, $vid)
+    {
+        return $this->_call("providers/$pid/courses/$cid/variations/$vid", 'get');
     }
     
     const VARIATION_AWARD_TYPES_PARAM_NAME = 'award_types';
     
-    public function updateCourseVariation($vid, array $params)
+    /**
+     * 
+     * @param type $pid
+     * @param type $cid
+     * @param type $vid
+     * @param array $params
+     * @return json
+     * @throws DEMAPI_IllegalArgumentException
+     */
+    public function updateVariation($pid, $cid, $vid, array $params)
     {
-        if($vid === null){
-            throw new DEMAPI_IllegalArgumentException('variation id cannot be
-                null');
-        }
-        
-        return $this->_call('variation', 'put', $vid, $params);
-        
+        return $this->_call("providers/$pid/courses/$cid/variations/$vid", 'put', $params);
     }
     
     /**
@@ -146,7 +151,7 @@ class DEMAPI
      */
     public function getAwardTypes()
     {
-        return $this->_call('award', 'get');
+        return $this->_call('awardtypes', 'get');
     }
     
     /**
@@ -156,43 +161,42 @@ class DEMAPI
      */
     public function getSubjectAreas()
     {
-        return $this->_call('subject', 'get');
+        return $this->_call('subjectareas', 'get');
     }
     
     /**
-     * 
-     * @param string $resource
-     * @param string $method
-     * @param int $id
-     * @param array $params
+     * @param type $resource
+     * @param type $method
+     * @param type $params
      * @return type
      * @throws Exception
+     * @throws DEMAPI_UnauthorizedAccessException
+     * @throws DEMAPI_IllegalArgumentException
+     * @throws DEMAPI_ServerErrorException
      */
-    private function _call($resource, $method, $id = null, $params = array())
+    private function _call($resource, $method, $params = array())
     {
-        $path = '/' . $this->_version . "/$resource";
+        $path = "/$resource";
         
-        if($id !== null){
-            $path .=  "/$id";
+        $fields = "";
+        foreach(array_keys($params) as $p){
+            $fields .= "$p=" . $params[$p] . '&';
+        }
+        
+        // add any get params
+        if($method === 'get'){
+            $path .= "?$fields";
         }
         
         date_default_timezone_set('UTC');
         $date = new DateTime();        
         $date = $date->format(DateTime::RFC822);
-                        
-        $fields = "";
-        foreach(array_keys($params) as $p){
-            $fields .= "$p=" . $params[$p] . '&';
-        }
-       
-        $url = $this->_apiUrl . $path;
 
-        // add any get params
-        if($method === 'get'){
-            $url .= "?$fields";
-        }
+        $url = $this->_apiUrl . $path;
         
         $ch = curl_init($url);
+        
+        echo $url;
 
         // set method
         switch($method){

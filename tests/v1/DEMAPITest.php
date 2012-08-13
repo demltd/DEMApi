@@ -41,14 +41,7 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
         
         $this->assertEquals('University of Derby', $provider->title);
         
-        try{
-            $this->_api->updateProvider(null, array());
-            $this->fail();
-        }catch(DEMAPI_IllegalArgumentException $e){
-            // expected
-        }
-        
-        echo $this->_api->updateProvider(1, array(
+        $this->_api->updateProvider(1, array(
             DEMAPI::PROVIDER_TITLE_PARAM_NAME => 'Derby University'
         ));
         
@@ -60,22 +53,17 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
         
         $this->assertEquals('Derby University', $provider->title);
         
-        $this->_api->updateProvider(1, array('title' => 'University of Derby'));
+        $this->_api->updateProvider(1, array(
+            'title' => 'University of Derby'
+        ));
         
         $provider = json_decode($this->_api->getProvider(1));
         
         $this->assertEquals('University of Derby', $provider->title);
     }
 
-    public function testGetCourses()
-    {
-        try{
-            $this->_api->getProviderCourses(null);
-            $this->fail();
-        }catch(DEMAPI_IllegalArgumentException $e){
-            // expected
-        }
-        
+    public function testGetProviderCourses()
+    {        
         $json = $this->_api->getProviderCourses(1);
         
         $courses = json_decode($json);
@@ -84,15 +72,8 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
     }
     
     public function testGetCourse()
-    {
-        try{
-            $this->_api->getCourse(null);
-            $this->fail();
-        }catch(DEMAPI_IllegalArgumentException $e){
-            // expected
-        }
-        
-        $json = $this->_api->getCourse(10);
+    {        
+        $json = $this->_api->getCourse(1, 10);
         
         $this->assertNotNull($json);
         
@@ -105,17 +86,8 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
     }
     
     public function testUpdateCourse()
-    {
-        try{
-            $this->_api->updateCourse(null, array());
-            $this->fail();
-        }catch(DEMAPI_IllegalArgumentException $e){
-            // expected
-        }
-        
-        $json = $this->_api->getCourse(8);
-        
-        echo $json;
+    {        
+        $json = $this->_api->getCourse(1, 8);
         
         $course = json_decode($json);
         
@@ -123,50 +95,52 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
         
         $this->assertEquals(1, $course->active);
         
-        echo $this->_api->updateCourse(8, array(
+        $this->_api->updateCourse(1, 8, array(
             DEMAPI::COURSE_ACTIVE_PARAM_NAME => 0
         ));
         
-        $json = $this->_api->getCourse(8);
+        $json = $this->_api->getCourse(1, 8);
         
         $course = json_decode($json);
         
         $this->assertEquals(0, $course->active);
         
-        $this->_api->updateCourse(8, array(
+        $this->_api->updateCourse(1, 8, array(
             DEMAPI::COURSE_ACTIVE_PARAM_NAME => 1
         ));
     }
     
-    public function testUpdateCourseVariation()
+    public function testGetCourseVariations()
     {
-        try{
-            $this->_api->updateCourseVariation(null, array());
-            $this->fail();
-            
-        }catch(DEMAPI_IllegalArgumentException $e){
-            // expected
-        }
+        $this->_api->getCourseVariations(1, 8);
+    }
+    
+    public function testUpdateCourseVariation()
+    {        
+        $json = $this->_api->getCourseVariations(1, 8);
         
-        $json = $this->_api->getCourse(8);
-        
-        echo $json;
-        
-        $course = json_decode($json);
-        
+        $variations = json_decode($json);
+               
         $this->assertEquals(array('LOS-UG-BA', 'LOS-UG-BAH'), 
-            $course->variations[0]->award_types);
+            $variations[0]->award_types);
         
-        echo $this->_api->updateCourseVariation($course->variations[0]->id, 
+        $vid = $variations[0]->id;
+        
+        echo $this->_api->updateVariation(1, 8, $vid, 
             array(DEMAPI::VARIATION_AWARD_TYPES_PARAM_NAME => 
                 'LOS-UG-BA,LOS-UG-BAH,LOS-UG-DIP'));
         
-        $json = $this->_api->getCourse(8);
+        $json = $this->_api->getVariation(1, 8, $vid);
         
-        $course = json_decode($json);
+        $variation = json_decode($json);
         
         $this->assertEquals(array('LOS-UG-BA','LOS-UG-BAH','LOS-UG-DIP'),
-            $course->variations[0]->award_types);
+            $variation->award_types);
+        
+        // set back to original value
+        $this->_api->updateVariation(1, 8, $vid, array(
+            DEMAPI::VARIATION_AWARD_TYPES_PARAM_NAME => 'LOS-UG-BA,LOS-UG-BAH',
+        ));
     }
     
     public function testGetAwardTypes()
