@@ -164,6 +164,11 @@ class DEMAPI
         return $this->_call('subjectareas', 'get');
     }
     
+    public function search(array $params)
+    {
+        return $this->_call('search', 'get', $params);
+    }
+    
     /**
      * @param type $resource
      * @param type $method

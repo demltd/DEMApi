@@ -164,4 +164,17 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
         
         $this->assertTrue(count($subjects) > 300);
     }
+    
+    public function testSearch()
+    {
+        $params = array(
+            'keyword' => 'Engineering',
+        );
+        
+        $json = $this->_api->search($params);
+        
+        $matches = json_decode($json);
+        
+        $this->assertTrue(strstr($matches[0]->title, 'Engineering') !== false);
+    }
 }
