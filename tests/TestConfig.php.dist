@@ -1,0 +1,10 @@
+<?php
+define('ZF2_PATH', '/var/www/library/ZendFramework-minimal-2.0.3/library/');
+
+include __DIR__ . '/DEMPortalTest/TestHelper.php';
+
+return array(
+    'modules' => array(
+        'DEMPortal',
+    ),
+);

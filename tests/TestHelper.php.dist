@@ -1,16 +1,7 @@
 <?php
 
-$paths = array(
-    get_include_path(),
-    '@ZEND_PATH@',
-);
-
 defined('API_KEY')
-    or define('API_KEY', '@API_KEY@');
+    or define('API_KEY', 'your api key');
 
 defined('API_SECRET')
-    or define('API_SECRET', '@API_SECRET@');
-
-set_include_path(implode(PATH_SEPARATOR, $paths));
-
-require_once dirname(__FILE__) . '/../v1/DEMAPI.php';
+    or define('API_SECRET', 'your api secret');

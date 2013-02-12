@@ -1,4 +1,11 @@
 <?php
+namespace DEMApi;
+
+use DateTime;
+use DomainException;
+use Exception;
+use InvalidArgumentException;
+use RuntimeException;
 /**
  * Library exposing the DEM api.
  *
@@ -12,13 +19,8 @@
  *
  * Some methods require administrator authentication.
  */
-class DEMAPI
-{
-    /**
-    * This api library is for version 1 of the api.
-    */
-    private $_version = 'v1';
-    
+class DEMApi
+{    
     /**
     *  Api returns json
     */
@@ -29,7 +31,7 @@ class DEMAPI
     /**
     *  API Key identifies you.
     */
-    private $_apiKey;
+    private $apiKey;
     
     /** 
     *  Secret key used to sign request.
@@ -38,9 +40,9 @@ class DEMAPI
     
     public function __construct($apiKey, $apiSecret)
     {
-        $this->_apiKey = $apiKey;
+        $this->apiKey = $apiKey;
         $this->_secret = $apiSecret;
-        $this->_apiUrl = 'http://staging-api.demltd.com';
+        $this->_apiUrl = 'http://api.demltd.com';
     }
     
     /**
@@ -235,7 +237,7 @@ class DEMAPI
         $signature = $this->_sign($path, $method, $date);
         
         $headers = array(
-            'Authorization:' . API_KEY . ":$signature", 
+            'Authorization:' . $this->apiKey . ":$signature", 
             "Date: $date",
         );
         
@@ -251,20 +253,19 @@ class DEMAPI
         
         switch ($httpStatusCode) {
             case '401':
-                throw new DEMAPI_UnauthorizedAccessException($output);
+                throw new DomainException($output);
                 break;
             case '400':
-                throw new DEMAPI_IllegalArgumentException($output);
+                throw new InvalidArgumentException($output);
                 break;
             case '500':
-                throw new DEMAPI_ServerErrorException('There was a problem handling
+                throw new RuntimeException('There was a problem handling
                     your request, please try again later' . $output);
                 break;
 
             default:
                 break;
-        }
-        
+        }        
         return $output;
     }
     
@@ -282,7 +283,3 @@ class DEMAPI
         return sha1($path . $method . $date . $this->_secret);
     }
 }
-
-class DEMAPI_IllegalArgumentException extends Exception{}
-class DEMAPI_UnauthorizedAccessException extends Exception{}
-class DEMAPI_ServerErrorException extends Exception{}

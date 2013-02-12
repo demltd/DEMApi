@@ -6,32 +6,46 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
     /**
      * @var DEMAPI
      */
-    private $_api;
+    private $api;
     
     public function __construct()
     {
-        $this->_api = new DEMAPI(API_KEY, API_SECRET);
+        $this->api = new DEMAPI(API_KEY, API_SECRET);
     }
     
     public function testGetProvider()
     {
-        $json = $this->_api->getProvider(1);
+        $json = $this->_api->getProvider(4, array(
+            'sid' => 2,
+        ));
+        
+        echo $json;
         
         $this->assertNotNull($json);
-                
-        $provider = json_decode($json);
-                
-        $this->assertEquals('University of Derby', $provider->title);
+
+        $providerById = json_decode($json);
         
-        $this->assertEquals('http://media.local/provider/1/logo.gif', 
-            $provider->logoSrc);
-            
-        $regions = $provider->subscriptions->subscribedRegions;
+        $json = $this->_api->getProvider('university-of-york');
+                
+        $providerByIdent = json_decode($json);
         
-        $this->assertEquals(17, count($regions));
+        $this->assertEquals($providerById, $providerByIdent);
+        
+        $provider = $providerByIdent;
+        
+        $this->assertEquals('http://media.demltd.com/providers/university-of-york/logo.gif', 
+            $provider->logo_src);
+        
+        $this->assertEquals('http://www.york.ac.uk/', $provider->url);
+        
+        $this->assertEquals('', $provider->youtube_embed_code);
+        
+        $json = $this->_api->getProvider('university-of-york', array(
+            'sid' => 2,
+        ));
     }
     
-    public function testUpdateProvider()
+    public function UpdateProvider()
     {
         $json = $this->_api->getProvider(1);
         
@@ -64,7 +78,7 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
 
     public function testGetProviderCourses()
     {        
-        $json = $this->_api->getProviderCourses(1);
+        $json = $this->_api->getProviderCourses('university-of-york');
         
         $courses = json_decode($json);
         
@@ -73,21 +87,32 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
     
     public function testGetCourse()
     {        
-        $json = $this->_api->getCourse(1, 10);
+        $json = $this->_api->getCourse(87, 13079);
+        
+        echo $json;
         
         $this->assertNotNull($json);
         
-        $course = json_decode($json);
+        $courseByPid = json_decode($json);
+        
+        $json = $this->_api->getCourse('university-of-huddersfield-the-business-school',
+            13079);
+        
+        echo $json;
+        
+        $courseByIdent = json_decode($json);
+        
+        $this->assertEquals($courseByPid, $courseByIdent);
         
         $this->assertTrue(isset($course->title));
-        
+                        
         $this->assertEquals('Architectural Technology and Digital Innovation (K101)',
-            $course->title);
+            $course->title);               
     }
     
-    public function testUpdateCourse()
+    public function UpdateCourse()
     {        
-        $json = $this->_api->getCourse(1, 8);
+        $json = $this->_api->getCourse(87, 13079);
         
         $course = json_decode($json);
         
@@ -110,12 +135,12 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
         ));
     }
     
-    public function testGetCourseVariations()
+    public function GetCourseVariations()
     {
         $this->_api->getCourseVariations(1, 8);
     }
     
-    public function testUpdateCourseVariation()
+    public function UpdateCourseVariation()
     {        
         $json = $this->_api->getCourseVariations(1, 8);
         
@@ -143,7 +168,60 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
         ));
     }
     
-    public function testGetAwardTypes()
+    public function GetProfiles()
+    {
+        $params = array(
+            'sid' => DEMAPI::SITE_ID_STUDYLINK_INTL,
+        );
+        
+        $json = $this->_api->getProviderProfiles(1, $params);
+        
+        $this->assertNotNull($json);
+        
+        $this->assertTrue(is_string($json));
+        
+        $profiles = json_decode($json);
+        
+        $this->assertTrue(count($profiles) > 10);
+        
+        foreach($profiles as $p){
+            
+            $this->assertEquals(1, $p->site_id, 'profile description: ' .
+                $p->description);
+        }
+    }
+    
+    public function ProviderProfile()
+    {
+        $json = $this->_api->getProfile(1, 61);
+        
+        $this->assertNotNull($json);
+        
+        $profile = json_decode($json);
+        
+        $this->assertEquals('http://derby.ac.uk/apply', $profile->content);
+        
+        $original = $profile->content;
+        
+        $params = array(
+            'value' => 'http://derby.ac.uk/applyingtoderby',
+        );
+        
+        $this->_api->updateProviderProfile(1, 61, $params);
+        
+        $json = $this->_api->getProfile(1, 61);
+        
+        $profile = json_decode($json);
+        
+        $this->assertEquals('http://derby.ac.uk/applyingtoderby', $profile->content);
+
+        // change back
+        $this->_api->updateProviderProfile(1, 61, array('value' => $original));
+        
+        
+    }
+    
+    public function GetAwardTypes()
     {
         $json = $this->_api->getAwardTypes();
         
@@ -154,7 +232,7 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
         $this->assertTrue(count($types) > 40);
     }
     
-    public function testGetSubjectAreas()
+    public function GetSubjectAreas()
     {
         $json = $this->_api->getSubjectAreas();
         
@@ -169,11 +247,12 @@ class DEMAPITest extends PHPUnit_Framework_TestCase{
     {
         $params = array(
             'keyword' => 'Engineering',
+            'sid' => 2,
         );
         
         $json = $this->_api->search($params);
         
-        $matches = json_decode($json);
+        $matches = json_decode($json)->results;
         
         $this->assertTrue(strstr($matches[0]->title, 'Engineering') !== false);
     }
