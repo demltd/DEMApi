@@ -1,0 +1,15 @@
+{
+    "name": "dem/dem-api",
+    "description": "ZF2 module for assisting with access to the DEM Portal API",
+    "type": "library",
+    "version": "0.9",
+    "require": {
+        "php": ">=5.3.3",
+        "zendframework/zendframework": "2.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "DEMApi": "src/"
+        }
+    }
+}
