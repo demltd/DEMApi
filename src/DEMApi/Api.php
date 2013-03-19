@@ -19,14 +19,14 @@ use RuntimeException;
  *
  * Some methods require administrator authentication.
  */
-class DEMApi
+class Api
 {    
     /**
     *  Api returns json
     */
     private $_acceptType = 'text/json';
     
-    private $_apiUrl;
+    private $apiUrl;
     
     /**
     *  API Key identifies you.
@@ -42,7 +42,12 @@ class DEMApi
     {
         $this->apiKey = $apiKey;
         $this->_secret = $apiSecret;
-        $this->_apiUrl = 'http://api.demltd.com';
+        $this->apiUrl = 'http://api.demltd.com';
+    }
+    
+    public function setApiUrl($url)
+    {
+        $this->apiUrl = $url;
     }
     
     /**
@@ -184,8 +189,27 @@ class DEMApi
         return $this->_call('subjectareas', 'get');
     }
     
-    public function search(array $params)
+    public function search($keywords = null, $page = null, $rpp = null,
+        $studyMode = null)
     {
+        $params = array();
+        
+        if($keywords !== null){
+            $params['keywords'] = $keywords;
+        }
+        
+        if($page !== null){
+            $params['page'] = $page;
+        }
+        
+        if($rpp !== null){
+            $params['rpp'] = $rpp;
+        }
+        
+        if($studyMode !== null){
+            $params['study_mode'] = $studyMode;
+        }
+        
         return $this->_call('search', 'get', $params);
     }
     
@@ -201,7 +225,7 @@ class DEMApi
      */
     private function _call($resource, $method, $params = array())
     {
-        $path = "/$resource";
+        $path = "$resource/";
         
         $fields = "";
         foreach(array_keys($params) as $p){
@@ -217,7 +241,7 @@ class DEMApi
         $date = new DateTime();        
         $date = $date->format(DateTime::RFC822);
 
-        $url = $this->_apiUrl . $path;
+        $url = $this->apiUrl . $path;
         
         $ch = curl_init($url);
 
