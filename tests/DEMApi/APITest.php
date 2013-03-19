@@ -4,8 +4,8 @@ namespace DEMApi;
 use DEMApi\Api;
 use PHPUnit_Framework_TestCase;
 
-class ApiTest extends PHPUnit_Framework_TestCase{
-    
+class ApiTest extends PHPUnit_Framework_TestCase
+{    
     /**
      * @var Api
      */
@@ -69,5 +69,26 @@ class ApiTest extends PHPUnit_Framework_TestCase{
         $decodedResult = json_decode($json);
         
         $this->assertEquals('distance', $decodedResult->matches[0]->variations[0]->study_modes);
+    }
+    
+    public function testGetProvider()
+    {
+        $json = $this->api->getProvider('university-of-derby');
+        
+        $decodedResult = json_decode($json);
+        
+        $this->assertEquals('university-of-derby', $decodedResult->ident);
+        $this->assertEquals('University of Derby', $decodedResult->title);
+        $this->assertEquals('GB', $decodedResult->country);
+    }
+    
+    public function testGetProviderMeta()
+    {
+        $json = $this->api->getProviderMeta('university-of-derby');
+        
+        $decodedResult = json_decode($json);
+        
+        $this->assertNotNull($decodedResult->facilities);
+        $this->assertNotNull($decodedResult->year_founded);
     }
 }

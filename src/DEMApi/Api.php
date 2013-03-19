@@ -53,29 +53,27 @@ class Api
     /**
      * Returns provider data in json format based on the provider id.
      * 
-     * @param string $identifier id or ident
-     * @return json
+     * GET /api/search/{ident}/
+     * 
+     * @param string $ident
+     * @return tring json
      */
     public function getProvider($identifier, $params = array())
     {
-        return $this->_call("providers/$identifier", 'get', $params);
+        return $this->call("providers/$identifier", 'get', $params);
     }
-    
-    
-    const PROVIDER_TITLE_PARAM_NAME = 'title';
     
     /**
-     * Updates provider associated with given id .
+     * GET /api/providers/{ident}/meta/
      * 
-     * @param type $pid
-     * @param array $params
-     * @return json
+     * @param string $identifier
+     * @return type
      */
-    public function updateProvider($pid, array $params)
-    {   
-        return $this->_call("providers/$pid", 'put', $params);
+    public function getProviderMeta($identifier)
+    {
+        return $this->call("providers/$identifier/meta", 'get', array());
     }
-    
+        
     /**
      * Returns the courses associated with the provider id.
      * 
@@ -84,26 +82,21 @@ class Api
      */
     public function getProviderCourses($pid)
     {
-        return $this->_call("providers/$pid/courses", 'get');
+        return $this->call("providers/$pid/courses", 'get');
     }
     
     const SITE_ID_STUDYLINK_INTL = 1;
     
     public function getProviderProfiles($pid, array $params)
     {
-        return $this->_call("providers/$pid/profiles", 'get', $params);
+        return $this->call("providers/$pid/profiles", 'get', $params);
     }
     
     public function getProfile($pid, $profileId)
     {
-        return $this->_call("providers/$pid/profiles/$profileId", 'get');
+        return $this->call("providers/$pid/profiles/$profileId", 'get');
     }
-    
-    public function updateProviderProfile($pid, $profileId, array $params)
-    {
-        return $this->_call("providers/$pid/profiles/$profileId", 'put', $params);
-    }
-    
+
     /**
      * Returns the course associated with the course id.
      * 
@@ -113,21 +106,7 @@ class Api
      */
     public function getCourse($identifier, $cid)
     {           
-        return $this->_call("providers/$identifier/courses/$cid", 'get');
-    }
-    
-    const COURSE_ACTIVE_PARAM_NAME = 'active';
-    
-    /**
-     * Update a course field
-     * 
-     * @param int $pid
-     * @param int $cid
-     * @param array $params
-     */
-    public function updateCourse($pid, $cid, array $params)
-    {
-        return $this->_call("providers/$pid/courses/$cid", 'put', $params);
+        return $this->call("providers/$identifier/courses/$cid", 'get');
     }
     
     /**
@@ -138,7 +117,7 @@ class Api
      */
     public function getCourseVariations($pid, $cid)
     {
-        return $this->_call("providers/$pid/courses/$cid/variations", 'get');
+        return $this->call("providers/$pid/courses/$cid/variations", 'get');
     }
     
     /**
@@ -150,45 +129,21 @@ class Api
      */
     public function getVariation($pid, $cid, $vid)
     {
-        return $this->_call("providers/$pid/courses/$cid/variations/$vid", 'get');
-    }
-    
-    const VARIATION_AWARD_TYPES_PARAM_NAME = 'award_types';
-    
-    /**
-     * 
-     * @param type $pid
-     * @param type $cid
-     * @param type $vid
-     * @param array $params
-     * @return json
-     * @throws DEMAPI_IllegalArgumentException
-     */
-    public function updateVariation($pid, $cid, $vid, array $params)
-    {
-        return $this->_call("providers/$pid/courses/$cid/variations/$vid", 'put', $params);
+        return $this->call("providers/$pid/courses/$cid/variations/$vid", 'get');
     }
     
     /**
-     * Returns all award types
+     * Returns the most relevant courses (along 
+     * with variations) for the given search criteria.
      * 
-     * @return json
-     */
-    public function getAwardTypes()
-    {
-        return $this->_call('awardtypes', 'get');
-    }
-    
-    /**
-     * Returns all subject areas
+     * GET /api/search/
      * 
-     * @return json
+     * @param string $keywords
+     * @param mixed $page
+     * @param mixed $rpp
+     * @param string $studyMode
+     * @return string json
      */
-    public function getSubjectAreas()
-    {
-        return $this->_call('subjectareas', 'get');
-    }
-    
     public function search($keywords = null, $page = null, $rpp = null,
         $studyMode = null)
     {
@@ -210,7 +165,7 @@ class Api
             $params['study_mode'] = $studyMode;
         }
         
-        return $this->_call('search', 'get', $params);
+        return $this->call('search', 'get', $params);
     }
     
     /**
@@ -223,7 +178,7 @@ class Api
      * @throws DEMAPI_IllegalArgumentException
      * @throws DEMAPI_ServerErrorException
      */
-    private function _call($resource, $method, $params = array())
+    private function call($resource, $method, $params = array())
     {
         $path = "$resource/";
         
