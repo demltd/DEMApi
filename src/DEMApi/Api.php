@@ -58,78 +58,61 @@ class Api
      * @param string $ident
      * @return tring json
      */
-    public function getProvider($identifier, $params = array())
+    public function getProvider($ident, $params = array())
     {
-        return $this->call("providers/$identifier", 'get', $params);
+        return $this->call("providers/$ident", 'get', $params);
     }
     
     /**
      * GET /api/providers/{ident}/meta/
      * 
-     * @param string $identifier
+     * @param string $ident
      * @return type
      */
-    public function getProviderMeta($identifier)
+    public function getProviderMeta($ident)
     {
-        return $this->call("providers/$identifier/meta", 'get', array());
+        return $this->call("providers/$ident/meta", 'get', array());
     }
+    
+    /**
+     * GET /api/providers/{ident}/profiles/
+     * 
+     * @param type $ident
+     * @param type $params
+     * @return type
+     */
+    public function getProviderProfiles($ident, $params = array())
+    {
+        return $this->call("providers/$ident/profiles", 'get', $params);
+    }
+    
         
     /**
-     * Returns the courses associated with the provider id.
+     * Returns the courses associated with the provider ident.
      * 
-     * @param type $pid
+     * GET /api/providers/{ident}/courses/
+     * 
+     * @param string $ident
      * @return json
      */
-    public function getProviderCourses($pid)
+    public function getProviderCourses($ident)
     {
-        return $this->call("providers/$pid/courses", 'get');
-    }
-    
-    const SITE_ID_STUDYLINK_INTL = 1;
-    
-    public function getProviderProfiles($pid, array $params)
-    {
-        return $this->call("providers/$pid/profiles", 'get', $params);
-    }
-    
-    public function getProfile($pid, $profileId)
-    {
-        return $this->call("providers/$pid/profiles/$profileId", 'get');
+        return $this->call("providers/$ident/courses", 'get');
     }
 
     /**
      * Returns the course associated with the course id.
+     * Includes all course variations.
      * 
-     * @param string $identifier
+     * GET /api/providers/{ident}/courses/{id}/
+     * 
+     * @param string $ident
      * @param int $cid
      * @return json
      */
-    public function getCourse($identifier, $cid)
+    public function getCourse($ident, $cid)
     {           
-        return $this->call("providers/$identifier/courses/$cid", 'get');
-    }
-    
-    /**
-     * 
-     * @param int $pid
-     * @param int $cid
-     * @return type
-     */
-    public function getCourseVariations($pid, $cid)
-    {
-        return $this->call("providers/$pid/courses/$cid/variations", 'get');
-    }
-    
-    /**
-     * 
-     * @param type $pid
-     * @param type $cid
-     * @param type $vid
-     * @return type
-     */
-    public function getVariation($pid, $cid, $vid)
-    {
-        return $this->call("providers/$pid/courses/$cid/variations/$vid", 'get');
+        return $this->call("providers/$ident/courses/$cid", 'get');
     }
     
     /**

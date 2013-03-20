@@ -5,7 +5,7 @@ use DEMApi\Api;
 use PHPUnit_Framework_TestCase;
 
 class ApiTest extends PHPUnit_Framework_TestCase
-{    
+{
     /**
      * @var Api
      */
@@ -90,5 +90,63 @@ class ApiTest extends PHPUnit_Framework_TestCase
         
         $this->assertNotNull($decodedResult->facilities);
         $this->assertNotNull($decodedResult->year_founded);
+    }
+    
+    public function testGetAllProviderProfiles()
+    {
+        $json = $this->api->getProviderProfiles('university-of-derby');
+        
+        $decodedResult = json_decode($json);
+        
+        $this->assertTrue(count($decodedResult) > 0);
+        $this->assertNotNull($decodedResult[0]->id);
+        $this->assertNotNull($decodedResult[0]->site_id);
+        $this->assertNotNull($decodedResult[0]->description);
+    }
+    
+    public function testGetProviderProfilesForSiteId()
+    {
+        $json = $this->api->getProviderProfiles('university-of-derby',
+            array('site_id' => 1));
+        
+        $decodedResult = json_decode($json);
+        
+        foreach($decodedResult as $profile){
+            
+            $this->assertEquals(1, $profile->site_id);
+        }
+    }        
+    
+    public function testGetProviderCourses()
+    {
+        $json = $this->api->getProviderCourses('university-of-derby');
+        
+        $decodedResult = json_decode($json);
+        
+        $this->assertTrue(count($decodedResult) > 0);
+        $this->assertNotNull($decodedResult[0]->id);
+        $this->assertNotNull($decodedResult[0]->title);
+    }
+    
+    public function testGetCourse()
+    {
+        // get a cid first
+        $json = $this->api->getProviderCourses('university-of-derby');
+        
+        $decodedResult = json_decode($json);
+        
+        $cid = (int) $decodedResult[0]->id;
+        
+        // get course
+        $json = $this->api->getCourse('university-of-derby', $cid);
+        
+        $decodedResult = json_decode($json);
+        
+        $this->assertNotNull($decodedResult->id);
+        $this->assertEquals($cid, $decodedResult->id);
+        $this->assertNotNull($decodedResult->title);
+        $this->assertNotNull($decodedResult->contact_name);
+        $this->assertNotNull($decodedResult->variations);
+        $this->assertTrue(is_array($decodedResult->variations));
     }
 }
