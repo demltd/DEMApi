@@ -9,7 +9,10 @@
     },
     "autoload": {
         "psr-0": {
-            "DEMApi\\": "src/"
-        }
+            "DEMApi": "src/"
+        },
+        "classmap": [
+            "./"
+        ]
     }
 }
