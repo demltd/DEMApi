@@ -30,6 +30,13 @@ class Module
             'factories' => array(
                 'DEMApi\Api' => function($sm) {
                     $conf = $sm->get('Config');
+                    
+                    if(!isset($conf['demapi']['api_key']) || 
+                        !isset($conf['demapi']['api_secret'])){
+                        throw new \RuntimeException('DEMApi\Api requires api_key and api_secret '
+                            . 'to be defined in your local configuration');
+                    }
+                    
                     return new Api($conf['demapi']['api_key'], $conf['demapi']['api_secret']);
                 }
             ),
