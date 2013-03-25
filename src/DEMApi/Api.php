@@ -53,7 +53,7 @@ class Api
     /**
      * Returns provider data in json format based on the provider id.
      * 
-     * GET /api/search/{ident}/
+     * GET /api/providers/{ident}/
      * 
      * @param string $ident
      * @return tring json

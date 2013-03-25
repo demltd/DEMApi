@@ -1,0 +1,13 @@
+<?php
+/**
+ * This is a samle configuration file for the DEMApi module.
+ * Copy this to your project config/autoload directory and 
+ * add your api key and api secret.
+ */
+return array(
+    'demapi' => array(
+        'api_key' => 'YOUR_API_KEY',
+        'api_secret' => 'YOUR_API_SECRET',
+    ),
+);
+?>
