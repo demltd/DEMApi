@@ -29,7 +29,7 @@ class Module
         return array(
             'factories' => array(
                 'DEMApi\Api' => function($sm) {
-                    $conf = $this->getConfig();
+                    $conf = $sm->get('Config');
                     return new Api($conf['demapi']['api_key'], $conf['demapi']['api_secret']);
                 }
             ),
