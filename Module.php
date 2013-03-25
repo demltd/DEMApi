@@ -1,6 +1,8 @@
 <?php
 namespace DEMApi;
 
+use DEMApi\Api;
+
 class Module
 {
     public function getAutoloaderConfig()
@@ -26,6 +28,10 @@ class Module
     {
         return array(
             'factories' => array(
+                'DEMApi\Api' => function($sm) {
+                    $conf = $this->getConfig();
+                    return new Api($conf['demapi']['api_key'], $conf['demapi']['api_secret']);
+                }
             ),
         );
     }
