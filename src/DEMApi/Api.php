@@ -36,12 +36,12 @@ class Api
     /** 
     *  Secret key used to sign request.
     */
-    private $_secret;
+    private $secret;
     
     public function __construct($apiKey, $apiSecret)
     {
         $this->apiKey = $apiKey;
-        $this->_secret = $apiSecret;
+        $this->secret = $apiSecret;
         $this->apiUrl = 'http://api.demltd.com';
     }
     
@@ -196,7 +196,7 @@ class Api
                 throw new Exception('Invalid http method');
         }
         
-        $signature = $this->_sign($path, $method, $date);
+        $signature = $this->sign("/api/$resource/", 'GET', $date);
         
         $headers = array(
             'Authorization:' . $this->apiKey . ":$signature", 
@@ -235,13 +235,13 @@ class Api
     /**
      * Signs the api request with your secret key.
      * 
-     * @param type $path
+     * @param type $resource
      * @param type $method
      * @param type $date
      * @return type
      */
-    private function _sign($path, $method, $date)
+    private function sign($resource, $method, $date)
     {        
-        return sha1($path . $method . $date . $this->_secret);
+        return sha1($resource . $method . $date . $this->secret);
     }
 }

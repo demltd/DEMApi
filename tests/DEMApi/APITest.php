@@ -12,9 +12,10 @@ class ApiTest extends PHPUnit_Framework_TestCase
     private $api;
     
     public function __construct()
-    {
-//        $this->api = new API(API_KEY, API_SECRET);
-        $this->api = new Api('', '');
+    {        
+        $config = include __DIR__ . '/../../config/module.demapi.local.php';
+        
+        $this->api = new Api($config['demapi']['api_key'], $config['demapi']['api_secret']);
         
         $this->api->setApiUrl('http://dev-portal.demltd.com/api/');
     }
