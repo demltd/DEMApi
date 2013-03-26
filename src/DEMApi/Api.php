@@ -58,9 +58,9 @@ class Api
      * @param string $ident
      * @return tring json
      */
-    public function getProvider($ident, $params = array())
+    public function getProvider($ident)
     {
-        return $this->call("providers/$ident", 'get', $params);
+        return $this->call("providers/$ident", 'get');
     }
     
     /**
@@ -71,19 +71,35 @@ class Api
      */
     public function getProviderMeta($ident)
     {
-        return $this->call("providers/$ident/meta", 'get', array());
+        return $this->call("providers/$ident/meta", 'get');
     }
     
     /**
      * GET /api/providers/{ident}/profiles/
      * 
-     * @param type $ident
-     * @param type $params
+     * @param string $ident
+     * @param int $sid site id the profile is for
      * @return type
      */
-    public function getProviderProfiles($ident, $params = array())
+    public function getProviderProfiles($ident, $sid)
     {
-        return $this->call("providers/$ident/profiles", 'get', $params);
+        return $this->call("providers/$ident/profiles/$sid", 'get');
+    }
+    
+    /**
+     * Returns a single profile for given provider, description
+     * and site id.
+     * 
+     * GET /api/providers/{ident}/profiles/{siteId}/{description}/
+     * 
+     * @param string $ident
+     * @param string $description
+     * @param string $siteId
+     */
+    public function getProviderProfile($ident, $description, $siteId)
+    {
+        return $this->call("providers/$ident/profiles/$siteId/$description",
+            'get');
     }
     
         
@@ -224,10 +240,14 @@ class Api
                 throw new RuntimeException('There was a problem handling
                     your request, please try again later' . $output);
                 break;
+            case '404':
+                throw new RuntimeException('Resource not found');
+                break;
 
             default:
                 break;
         }        
+        
         return $output;
     }
     

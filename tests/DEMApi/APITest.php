@@ -75,7 +75,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
     public function testGetProvider()
     {
         $json = $this->api->getProvider('university-of-derby');
-        
+
         $decodedResult = json_decode($json);
         
         $this->assertEquals('university-of-derby', $decodedResult->ident);
@@ -95,7 +95,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
     
     public function testGetAllProviderProfiles()
     {
-        $json = $this->api->getProviderProfiles('university-of-derby');
+        $json = $this->api->getProviderProfiles('university-of-derby', 1);
         
         $decodedResult = json_decode($json);
         
@@ -105,18 +105,30 @@ class ApiTest extends PHPUnit_Framework_TestCase
         $this->assertNotNull($decodedResult[0]->description);
     }
     
+    public function testGetProviderProfile()
+    {
+        $json = $this->api->getProviderProfile('university-of-derby',
+            'profile', 1);
+        
+        $decodedResult = json_decode($json);
+        
+        $this->assertNotNull($decodedResult->id);
+        $this->assertEquals(1, $decodedResult->site_id);
+        $this->assertEquals('profile', $decodedResult->description);
+        $this->assertNotNull($decodedResult->content);
+    }
+    
     public function testGetProviderProfilesForSiteId()
     {
-        $json = $this->api->getProviderProfiles('university-of-derby',
-            array('site_id' => 1));
-        
+        $json = $this->api->getProviderProfiles('university-of-derby', 1);
+
         $decodedResult = json_decode($json);
         
         foreach($decodedResult as $profile){
             
             $this->assertEquals(1, $profile->site_id);
         }
-    }        
+    }
     
     public function testGetProviderCourses()
     {
