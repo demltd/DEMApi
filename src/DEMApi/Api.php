@@ -29,6 +29,13 @@ class Api
     private $apiUrl;
     
     /**
+     * A site id is required for some api calls (see Api::search).
+     * 
+     * @var int
+     */
+    private $siteId;
+    
+    /**
     *  API Key identifies you.
     */
     private $apiKey;
@@ -48,6 +55,16 @@ class Api
     public function setApiUrl($url)
     {
         $this->apiUrl = $url;
+    }
+    
+    public function setSiteId($sid)
+    {
+        if(!is_int($sid)){
+            throw new \InvalidArgumentException('site id cannot be null and '
+                . 'must be of type integer');
+        }
+        
+        $this->siteId = $sid;
     }
     
     /**
@@ -162,6 +179,11 @@ class Api
         
         if($studyMode !== null){
             $params['study_mode'] = $studyMode;
+        }
+        
+        if($this->siteId === null){
+            throw new \RuntimeException('site id must be set before querying the api for '
+                . 'a search result response');
         }
         
         return $this->call('search', 'get', $params);

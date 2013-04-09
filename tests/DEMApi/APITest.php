@@ -134,6 +134,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
     {
         $json = $this->api->getProviderCourses('university-of-derby');
         
+        echo $json;
         $decodedResult = json_decode($json);
         
         $this->assertTrue(count($decodedResult) > 0);
