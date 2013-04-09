@@ -186,6 +186,8 @@ class Api
                 . 'a search result response');
         }
         
+        $params['sid'] = $this->siteId;
+        
         return $this->call('search', 'get', $params);
     }
     
