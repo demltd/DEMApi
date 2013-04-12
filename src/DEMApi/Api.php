@@ -161,7 +161,7 @@ class Api
      * @return string json
      */
     public function search($keywords = null, $page = null, $rpp = null,
-        $studyMode = null)
+        $studyMode = null, $studyLevel = null)
     {
         $params = array();
         
@@ -179,6 +179,10 @@ class Api
         
         if($studyMode !== null){
             $params['study_mode'] = $studyMode;
+        }
+        
+        if($studyLevel !== null){
+            $params['study_level'] = $studyLevel;
         }
         
         if($this->siteId === null){
