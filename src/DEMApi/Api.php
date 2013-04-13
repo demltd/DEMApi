@@ -161,7 +161,7 @@ class Api
      * @return string json
      */
     public function search($keywords = null, $page = null, $rpp = null,
-        $studyMode = null, $studyLevel = null)
+        $studyMode = null, $studyLevel = null, $durationMax = null)
     {
         $params = array();
         
@@ -183,6 +183,10 @@ class Api
         
         if($studyLevel !== null){
             $params['study_level'] = $studyLevel;
+        }
+        
+        if($durationMax !== null){
+            $params['duration_max'] = $duration;
         }
         
         if($this->siteId === null){
