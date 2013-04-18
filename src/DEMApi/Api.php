@@ -186,7 +186,7 @@ class Api
         }
         
         if($durationMax !== null){
-            $params['duration_max'] = $duration;
+            $params['duration_max'] = $durationMax;
         }
         
         if($this->siteId === null){
