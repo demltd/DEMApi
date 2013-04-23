@@ -18,10 +18,12 @@ class ApiTest extends PHPUnit_Framework_TestCase
         $this->api = new Api($config['demapi']['api_key'], $config['demapi']['api_secret']);
         
         $this->api->setApiUrl('http://dev-portal.demltd.com/api/');
+        
+        $this->api->setSiteId(2);
     }
             
     public function testSearchDefaultPageAndRpp()
-    {
+    {        
         $json = $this->api->search('engineering');
         
         $decodedResult = json_decode($json);
@@ -35,7 +37,9 @@ class ApiTest extends PHPUnit_Framework_TestCase
     {   
         // test keyword
         
-        $json = $this->api->search('engineering');
+        $json = $this->api->search('mechanical engineering', null, null, 'full-time', null, 2, 10);
+        
+        echo $json;
                 
         $matches = json_decode($json)->matches;
         
@@ -134,7 +138,6 @@ class ApiTest extends PHPUnit_Framework_TestCase
     {
         $json = $this->api->getProviderCourses('university-of-derby');
         
-        echo $json;
         $decodedResult = json_decode($json);
         
         $this->assertTrue(count($decodedResult) > 0);

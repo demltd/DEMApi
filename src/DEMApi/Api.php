@@ -161,7 +161,8 @@ class Api
      * @return string json
      */
     public function search($keywords = null, $page = null, $rpp = null,
-        $studyMode = null, $studyLevel = null, $durationMin = null, $durationMax = null)
+        $studyMode = null, $studyLevel = null, $country = null, $durationMin = null,
+        $durationMax = null)
     {
         $params = array();
         
@@ -183,6 +184,10 @@ class Api
         
         if($studyLevel !== null){
             $params['study_level'] = $studyLevel;
+        }
+        
+        if($country !== null){
+            $params['country'] = $country;
         }
         
         if($durationMin !== null){
@@ -283,7 +288,7 @@ class Api
             default:
                 break;
         }        
-        
+                
         return $output;
     }
     
