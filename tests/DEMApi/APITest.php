@@ -37,9 +37,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
     {   
         // test keyword
         
-        $json = $this->api->search('mechanical engineering', null, null, 'full-time', null, 2, 10);
-        
-        echo $json;
+        $json = $this->api->search('mechanical engineering', null, null, 'full-time', null, null, 2, 10);
                 
         $matches = json_decode($json)->matches;
         
