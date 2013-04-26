@@ -158,11 +158,14 @@ class Api
      * @param mixed $page
      * @param mixed $rpp
      * @param string $studyMode
+     * @param string $studyLevel
+     * @param string $destination preferred destinations (country list)
+     * @param string $country specific countries
      * @return string json
      */
     public function search($keywords = null, $page = null, $rpp = null,
-        $studyMode = null, $studyLevel = null, $country = null, $durationMin = null,
-        $durationMax = null)
+        $studyMode = null, $studyLevel = null, $destination = null, 
+        $country = null, $durationMin = null, $durationMax = null)
     {
         $params = array();
         
@@ -188,6 +191,10 @@ class Api
         
         if($country !== null){
             $params['country'] = $country;
+        }
+        
+        if($destination !== null){
+            $params['destination'] = $destination;
         }
         
         if($durationMin !== null){
