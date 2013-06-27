@@ -17,9 +17,9 @@ class ApiTest extends PHPUnit_Framework_TestCase
         
         $this->api = new Api($config['demapi']['api_key'], $config['demapi']['api_secret']);
         
-        $this->api->setApiUrl('http://dev-portal.demltd.com/api/');
+        $this->api->setApiUrl('http://staging-portal.demltd.com/api/');
         
-        $this->api->setSiteId(2);
+        $this->api->setSiteId(3);
     }
             
     public function testSearchDefaultPageAndRpp()
@@ -27,7 +27,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
         $json = $this->api->search('engineering');
         
         $decodedResult = json_decode($json);
-        
+
         $this->assertEquals(1, $decodedResult->current_page);
         
         $this->assertEquals(10, $decodedResult->rpp);
@@ -37,7 +37,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
     {   
         // test keyword
         
-        $json = $this->api->search('mechanical engineering', null, null, 'full-time',
+        $json = $this->api->search('mechanical engineering', null, null, '1',
             null, null, 12, 60);
 
         $matches = json_decode($json)->matches;
@@ -90,6 +90,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
     {
         $json = $this->api->getProviderMeta('university-of-derby');
         
+        echo $json;
         $decodedResult = json_decode($json);
         
         $this->assertNotNull($decodedResult->facilities);
@@ -164,5 +165,23 @@ class ApiTest extends PHPUnit_Framework_TestCase
         $this->assertNotNull($decodedResult->contact_name);
         $this->assertNotNull($decodedResult->variations);
         $this->assertTrue(is_array($decodedResult->variations));
+    }
+    
+    public function testGetCourseProfile()
+    {       
+        $json = $this->api->getProviderCourses('university-of-derby');
+        
+        $decodedResult = json_decode($json);
+        
+        $cid = (int) $decodedResult[10]->id;
+        
+        // get profile
+        $json = $this->api->getCourseProfile('university-of-derby', $cid, 'profile');
+        
+        echo $json;
+        
+        $decodedResult = json_decode($json);
+        
+        $this->assertEquals('profile', $decodedResult->description);
     }
 }

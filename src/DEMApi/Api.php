@@ -148,6 +148,11 @@ class Api
         return $this->call("providers/$ident/courses/$cid", 'get');
     }
     
+    public function getCourseProfile($ident, $cid, $description)
+    {
+        return $this->call("providers/$ident/courses/$cid/profiles/$description", 'get');
+    }
+    
     /**
      * Returns the most relevant courses (along 
      * with variations) for the given search criteria.
