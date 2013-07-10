@@ -160,6 +160,7 @@ class Api
      * GET /api/search/
      * 
      * @param string $keywords
+     * @param mixed $pid
      * @param mixed $page
      * @param mixed $rpp
      * @param string $studyMode
@@ -168,7 +169,7 @@ class Api
      * @param string $country specific countries
      * @return string json
      */
-    public function search($keywords = null, $page = null, $rpp = null,
+    public function search($keywords = null, $pid = null, $page = null, $rpp = null,
         $studyMode = null, $studyLevel = null, $destination = null, 
         $country = null, $durationMin = null, $durationMax = null)
     {
@@ -176,6 +177,10 @@ class Api
         
         if($keywords !== null){
             $params['keywords'] = $keywords;
+        }
+        
+        if($pid !== null){
+            $params['pid'] = $pid;
         }
         
         if($page !== null){
