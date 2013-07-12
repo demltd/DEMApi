@@ -154,7 +154,9 @@ class Api
     
     public function getCourseProfile($ident, $cid, $description)
     {
-        return $this->call("providers/$ident/courses/$cid/profiles/$description", 'get');
+        $sid = $this->siteId;
+        
+        return $this->call("providers/$ident/courses/$cid/profiles/$sid/$description", 'get');
     }
     
     /**
