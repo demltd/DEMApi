@@ -98,8 +98,10 @@ class Api
      * @param int $sid site id the profile is for
      * @return type
      */
-    public function getProviderProfiles($ident, $sid)
-    {
+    public function getProviderProfiles($ident)
+    {        
+        $sid = $this->siteId;
+        
         return $this->call("providers/$ident/profiles/$sid", 'get');
     }
     
@@ -113,9 +115,11 @@ class Api
      * @param string $description
      * @param string $siteId
      */
-    public function getProviderProfile($ident, $description, $siteId)
+    public function getProviderProfile($ident, $description)
     {
-        return $this->call("providers/$ident/profiles/$siteId/$description",
+        $sid = $this->siteId;
+        
+        return $this->call("providers/$ident/profiles/$sid/$description",
             'get');
     }
     
@@ -237,6 +241,10 @@ class Api
      */
     private function call($resource, $method, $params = array())
     {
+        if($this->siteId === null){
+            throw new \RuntimeException('site id must be set in order to use api');
+            
+        }
         $path = "$resource/";
         
         $fields = "";
