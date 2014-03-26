@@ -68,12 +68,22 @@ class Api
     }
     
     /**
+     * Returns all providers for a site id.
+     * 
+     * @return string json
+     */
+    public function getProviders()
+    {
+        return $this->call('providers', 'get', array('sid' => $this->siteId));
+    }
+    
+    /**
      * Returns provider data in json format based on the provider id.
      * 
      * GET /api/providers/{ident}/
      * 
      * @param string $ident
-     * @return tring json
+     * @return string json
      */
     public function getProvider($ident)
     {
