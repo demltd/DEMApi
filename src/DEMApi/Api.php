@@ -187,7 +187,7 @@ class Api
      */
     public function search($keywords = null, $pid = null, $page = null, $rpp = null,
         $studyMode = null, $studyLevel = null, $destination = null, 
-        $country = null, $durationMin = null, $durationMax = null)
+        $country = null, $durationMin = null, $durationMax = null, $awardType = null)
     {
         $params = array();
         
@@ -214,6 +214,10 @@ class Api
         if($studyLevel !== null){
             $params['study_level'] = $studyLevel;
         }
+        
+        if($awardType !== null){
+            $params['award_type'] = $awardType;
+        }        
         
         if($country !== null){
             $params['country'] = $country;
