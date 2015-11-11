@@ -187,7 +187,8 @@ class Api
      */
     public function search($keywords = null, $pid = null, $page = null, $rpp = null,
         $studyMode = null, $studyLevel = null, $destination = null, 
-        $country = null, $durationMin = null, $durationMax = null, $awardType = null)
+        $country = null, $durationMin = null, $durationMax = null, $awardType = null,
+        $resultsListMode = null)
     {
         $params = array();
         
@@ -233,6 +234,10 @@ class Api
         
         if($durationMax !== null){
             $params['duration_max'] = $durationMax;
+        }
+        
+        if ($resultsListMode !== null) {
+            $params['results-list-mode'] = $resultsListMode;
         }
         
         if($this->siteId === null){
