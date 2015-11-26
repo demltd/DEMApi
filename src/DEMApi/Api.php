@@ -162,6 +162,11 @@ class Api
         return $this->call("providers/$ident/courses/$cid", 'get');
     }
     
+    public function getCourseMeta($ident, $cid)
+    {
+        return $this->call("providers/$ident/courses/$cid/meta", 'get');
+    }
+    
     public function getCourseProfile($ident, $cid, $description)
     {
         $sid = $this->siteId;
