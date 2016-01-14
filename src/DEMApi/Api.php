@@ -198,7 +198,8 @@ class Api
     public function search($keywords = null, $pid = null, $page = null, $rpp = null,
         $studyMode = null, $studyLevel = null, $destination = null, 
         $country = null, $durationMin = null, $durationMax = null, $awardType = null,
-        $resultsListMode = null)
+        $resultsListMode = null, $latitude = null, $longitude = null, $minDistance = null,
+        $maxDistance = null)
     {
         $params = array();
         
@@ -248,6 +249,22 @@ class Api
         
         if ($resultsListMode !== null) {
             $params['results-list-mode'] = $resultsListMode;
+        }
+        
+        if ($latitude !== null) {
+            $params['latitude'] = $latitude;
+        }
+        
+        if ($longitude !== null) {
+            $params['longitude'] = $longitude;
+        }
+        
+        if ($minDistance !== null) {
+            $params['distance_min'] = $minDistance;
+        }
+        
+        if ($maxDistance !== null) {
+            $params['distance_max'] = $maxDistance;
         }
         
         if($this->siteId === null){
