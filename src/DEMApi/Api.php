@@ -87,7 +87,7 @@ class Api
      */
     public function getProvider($ident)
     {
-        return $this->call("providers/$ident", 'get');
+        return $this->call("providers/$ident", 'get', array('sid' => $this->siteId));
     }
     
     /**
