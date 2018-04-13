@@ -181,7 +181,7 @@ class Api
     
     public function getRecommendedProviders()
     {
-        return $this->call('search/recommendedproviders', 'get');
+        return $this->call('search/recommendedproviders', 'get', array('sid' => $this->siteId));
     }
     
     /**
