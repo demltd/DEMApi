@@ -179,6 +179,11 @@ class Api
         return $this->call("search/autocomplete", 'get', array('term' => $term));        
     }
     
+    public function getRecommendedProviders()
+    {
+        return $this->call('search/recommendedproviders', 'get');
+    }
+    
     /**
      * Returns the most relevant courses (along 
      * with variations) for the given search criteria.
