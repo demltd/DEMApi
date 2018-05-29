@@ -49,7 +49,7 @@ class Api
     {
         $this->apiKey = $apiKey;
         $this->secret = $apiSecret;
-        $this->apiUrl = 'http://api.demltd.com';
+        $this->apiUrl = 'https://editor.demltd.com/api/';
     }
     
     public function setApiUrl($url)
