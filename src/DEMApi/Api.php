@@ -125,12 +125,18 @@ class Api
      * @param string $description
      * @param string $siteId
      */
-    public function getProviderProfile($ident, $description)
+    public function getProviderProfile($ident, $description, $target = null)
     {
         $sid = $this->siteId;
         
-        return $this->call("providers/$ident/profiles/$sid/$description",
-            'get');
+        $path = "providers/$ident/profiles/$sid/$description";
+        
+        if ($target != null) {
+            
+            $path .= "/$target";
+        }
+        
+        return $this->call($path, 'get');
     }
     
         
