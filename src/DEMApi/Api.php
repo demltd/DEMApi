@@ -182,7 +182,7 @@ class Api
     
     public function getProviderOpenDays($ident)
     {
-        return $this->call("providers/$ident/open-days", 'get');
+        return $this->call("providers/$ident/open-days/", 'get');
     }
     
     public function autocomplete($term)
