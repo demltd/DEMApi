@@ -180,6 +180,11 @@ class Api
         return $this->call("providers/$ident/courses/$cid/profiles/$sid/$description", 'get');
     }
     
+    public function getProviderOpenDays($ident)
+    {
+        return $this->call("providers/$ident/open-days", 'get');
+    }
+    
     public function autocomplete($term)
     {
         return $this->call("search/autocomplete", 'get', array('term' => $term));        
