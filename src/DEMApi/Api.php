@@ -182,7 +182,7 @@ class Api
     
     public function getOpenDays()
     {
-        return $this->call('open-days/', 'get');
+        return $this->call('opendays/', 'get');
     }
     
     public function getProviderOpenDays($ident)
