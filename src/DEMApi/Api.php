@@ -180,10 +180,11 @@ class Api
         return $this->call("providers/$ident/courses/$cid/profiles/$sid/$description", 'get');
     }
     
-    public function getOpenDays($page = 1)
+    public function getOpenDays($page = 1, $level = null)
     {
         return $this->call('opendays', 'get', array(
             'page' => $page,
+            'level' => $level,
         ));
     }
     
