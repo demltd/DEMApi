@@ -321,7 +321,16 @@ class Api
         
         $fields = "";
         foreach(array_keys($params) as $p){
-            $fields .= "$p=" . urlencode($params[$p]) . '&';
+            
+            if (is_array($params[$p])) {
+                
+                $value = implode(',', $params[$p]);
+                
+            } else {
+                $value = $params[$p];
+            }
+            
+            $fields .= "$p=" . urlencode($value) . '&';
         }
         
         // add any get params
