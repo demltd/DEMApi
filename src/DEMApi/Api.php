@@ -180,7 +180,7 @@ class Api
         return $this->call("providers/$ident/courses/$cid/profiles/$sid/$description", 'get');
     }
     
-    public function getOpenDays($page = 1, array $levels = [])
+    public function getOpenDays($page = 1, array $levels = null)
     {
         return $this->call('opendays', 'get', array(
             'page' => $page,
@@ -341,7 +341,7 @@ class Api
         date_default_timezone_set('UTC');
         $date = new DateTime();        
         $date = $date->format(DateTime::RFC822);
-
+        
         $url = $this->apiUrl . $path;
         
         $ch = curl_init($url);
