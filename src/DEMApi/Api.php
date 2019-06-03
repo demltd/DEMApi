@@ -191,9 +191,10 @@ class Api
         ));
     }
     
-    public function getProviderOpenDays($ident)
+    public function getProviderOpenDays($ident, array $levels = [])
     {
-        return $this->call("providers/$ident/opendays", 'get');
+        return $this->call("providers/$ident/opendays", 'get', 
+            ['levels' => $levels]);
     }
     
     public function autocomplete($term)
