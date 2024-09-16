@@ -321,7 +321,7 @@ class Api
             throw new \RuntimeException('site id must be set in order to use api');
             
         }
-        $path = "$resource/";
+        $path = strtolower("$resource/");
         
         $fields = "";
         foreach(array_keys($params) as $p){
