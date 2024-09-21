@@ -78,6 +78,11 @@ class Api
         $this->regionId = $regionId;
     }
     
+    public function getRegionId()
+    {
+        return $this->regionId;
+    }
+    
     /**
      * Returns all providers for a site id.
      * 
