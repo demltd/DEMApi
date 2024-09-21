@@ -45,6 +45,12 @@ class Api
     */
     private $secret;
     
+    /**
+     * Search results from the api can be targeted to a specific region.
+     * @var type
+     */
+    private $regionId = null;
+    
     public function __construct($apiKey, $apiSecret)
     {
         $this->apiKey = $apiKey;
@@ -65,6 +71,11 @@ class Api
         }
         
         $this->siteId = $sid;
+    }
+    
+    public function setRegionId($regionId)
+    {
+        $this->regionId = $regionId;
     }
     
     /**
@@ -301,6 +312,8 @@ class Api
         }
         
         $params['sid'] = $this->siteId;
+        
+        $params['region'] = $this->regionId;
         
         return $this->call('search', 'get', $params);
     }
