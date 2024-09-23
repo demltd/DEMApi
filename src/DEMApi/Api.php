@@ -73,12 +73,16 @@ class Api
         $this->siteId = $sid;
     }
     
-    public function setRegionId($regionId)
+    /**
+     * Must be an integer corresponding to the region id number
+     * @param int $regionId
+     */
+    public function setRegionId(int $regionId)
     {
         $this->regionId = $regionId;
     }
     
-    public function getRegionId()
+    public function getRegionId():?int
     {
         return $this->regionId;
     }
