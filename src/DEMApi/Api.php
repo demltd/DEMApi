@@ -368,7 +368,7 @@ class Api
         $date = new DateTime();        
         $date = $date->format(DateTime::RFC822);
         
-        $url = $this->apiUrl . $path;
+        $url = strtolower($this->apiUrl . $path);
         
         $ch = curl_init($url);
 
@@ -436,6 +436,6 @@ class Api
      */
     private function sign($resource, $method, $date)
     {        
-        return sha1($resource . $method . $date . $this->secret);
+        return sha1(strtolower($resource) . $method . $date . $this->secret);
     }
 }
