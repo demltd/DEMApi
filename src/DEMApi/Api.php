@@ -387,7 +387,7 @@ class Api
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
                 break;
             case 'post':
-                curl_setopt($ch, CURLOPT_POST);
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);                
             default:
                 throw new Exception('Invalid http method');
