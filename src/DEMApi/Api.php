@@ -227,6 +227,11 @@ class Api
         return $this->call('search/recommendedproviders', 'get', array('sid' => $this->siteId));
     }
     
+    public function addEnquiry(array $data)
+    {
+        return $this->call('enquiry', 'put', $data);
+    }
+    
     /**
      * Returns the most relevant courses (along 
      * with variations) for the given search criteria.
