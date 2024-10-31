@@ -229,7 +229,7 @@ class Api
     
     public function addEnquiry(array $data)
     {
-        return $this->call('enquiry', 'put', $data);
+        return $this->call('enquiry', 'post', $data);
     }
     
     /**
@@ -386,6 +386,9 @@ class Api
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
                 break;
+            case 'post':
+                curl_setopt($ch, CURLOPT_POST);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);                
             default:
                 throw new Exception('Invalid http method');
         }
