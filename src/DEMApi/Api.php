@@ -229,7 +229,7 @@ class Api
     
     public function addEnquiry(array $data)
     {
-        return $this->call('enquiry', 'post', $data);
+        return $this->call('enquiry', 'POST', $data);
     }
     
     /**
