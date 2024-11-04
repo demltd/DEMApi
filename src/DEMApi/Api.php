@@ -386,7 +386,7 @@ class Api
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
                 break;
-            case 'post':
+            case 'POST':
                 curl_setopt($ch, CURLOPT_POST, true);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
                 break;
