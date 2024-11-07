@@ -364,6 +364,9 @@ class Api
             $fields .= "$p=" . urlencode($value) . '&';
         }
         
+        // add site to fields
+        $fields .= "site={$this->siteId}";
+        
         // add any get params
         if($method === 'get'){
             $path .= "?$fields";
