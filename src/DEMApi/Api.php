@@ -397,7 +397,7 @@ class Api
                 throw new Exception('Invalid http method');
         }
         
-        $signature = $this->sign("/api/$resource/", 'GET', $date);
+        $signature = $this->sign("/api/$resource/", $method, $date);
         
         $headers = array(
             'Authorization:' . $this->apiKey . ":$signature", 
