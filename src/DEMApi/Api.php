@@ -51,6 +51,10 @@ class Api
      */
     private $regionId = null;
     
+    const METHOD_GET = 'GET';
+    
+    const METHOD_POST = 'POST';
+    
     public function __construct($apiKey, $apiSecret)
     {
         $this->apiKey = $apiKey;
@@ -94,7 +98,7 @@ class Api
      */
     public function getProviders()
     {
-        return $this->call('providers', 'get', array('sid' => $this->siteId));
+        return $this->call('providers', static::METHOD_GET, array('sid' => $this->siteId));
     }
     
     /**
@@ -107,7 +111,7 @@ class Api
      */
     public function getProvider($ident)
     {
-        return $this->call("providers/$ident", 'get', array('sid' => $this->siteId));
+        return $this->call("providers/$ident", static::METHOD_GET, array('sid' => $this->siteId));
     }
     
     /**
@@ -118,7 +122,7 @@ class Api
      */
     public function getProviderMeta($ident)
     {
-        return $this->call("providers/$ident/meta", 'get');
+        return $this->call("providers/$ident/meta", static::METHOD_GET);
     }
     
     /**
@@ -132,7 +136,7 @@ class Api
     {        
         $sid = $this->siteId;
         
-        return $this->call("providers/$ident/profiles/$sid", 'get');
+        return $this->call("providers/$ident/profiles/$sid", static::METHOD_GET);
     }
     
     /**
@@ -156,7 +160,7 @@ class Api
             $path .= "/$target";
         }
         
-        return $this->call($path, 'get');
+        return $this->call($path, static::METHOD_GET);
     }
     
         
@@ -170,7 +174,7 @@ class Api
      */
     public function getProviderCourses($ident)
     {
-        return $this->call("providers/$ident/courses", 'get');
+        return $this->call("providers/$ident/courses", static::METHOD_GET);
     }
 
     /**
@@ -185,25 +189,25 @@ class Api
      */
     public function getCourse($ident, $cid)
     {           
-        return $this->call("providers/$ident/courses/$cid", 'get');
+        return $this->call("providers/$ident/courses/$cid", static::METHOD_GET);
     }
     
     public function getCourseMeta($ident, $cid)
     {
-        return $this->call("providers/$ident/courses/$cid/meta", 'get');
+        return $this->call("providers/$ident/courses/$cid/meta", static::METHOD_GET);
     }
     
     public function getCourseProfile($ident, $cid, $description)
     {
         $sid = $this->siteId;
         
-        return $this->call("providers/$ident/courses/$cid/profiles/$sid/$description", 'get');
+        return $this->call("providers/$ident/courses/$cid/profiles/$sid/$description", static::METHOD_GET);
     }
     
     public function getOpenDays($page = 1, array $levels = null, $latitude = null,
         $longitude = null)
     {
-        return $this->call('opendays', 'get', array(
+        return $this->call('opendays', static::METHOD_GET, array(
             'page' => $page,
             'levels' => $levels,
             'latitude' => $latitude,
@@ -213,18 +217,18 @@ class Api
     
     public function getProviderOpenDays($ident, array $levels = [])
     {
-        return $this->call("providers/$ident/opendays", 'get', 
+        return $this->call("providers/$ident/opendays", static::METHOD_GET, 
             ['levels' => $levels]);
     }
     
     public function autocomplete($term)
     {
-        return $this->call("search/autocomplete", 'get', array('term' => $term));        
+        return $this->call("search/autocomplete", static::METHOD_GET, array('term' => $term));        
     }
     
     public function getRecommendedProviders()
     {
-        return $this->call('search/recommendedproviders', 'get', array('sid' => $this->siteId));
+        return $this->call('search/recommendedproviders', static::METHOD_GET, array('sid' => $this->siteId));
     }
     
     public function addEnquiry(array $data)
@@ -329,7 +333,7 @@ class Api
         
         $params['region'] = $this->regionId;
         
-        return $this->call('search', 'get', $params);
+        return $this->call('search', static::METHOD_GET, $params);
     }
     
     /**
@@ -368,7 +372,7 @@ class Api
         $fields .= "site={$this->siteId}";
         
         // add any get params
-        if($method === 'get'){
+        if($method === static::METHOD_GET){
             $path .= "?$fields";
         }
         
