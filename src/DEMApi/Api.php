@@ -386,7 +386,7 @@ class Api
 
         // set method
         switch($method){
-            case 'get':
+            case static::METHOD_GET:
                 curl_setopt($ch, CURLOPT_HTTPGET, true);
                 break;
             case 'put':
