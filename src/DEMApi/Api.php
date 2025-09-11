@@ -256,7 +256,7 @@ class Api
         $studyMode = null, $studyLevel = null, $destination = null, 
         $country = null, $durationMin = null, $durationMax = null, $awardType = null,
         $resultsListMode = null, $latitude = null, $longitude = null, $minDistance = null,
-        $maxDistance = null)
+        $maxDistance = null, $broadSubjectArea = null)
     {
         $params = array();
         
@@ -286,6 +286,10 @@ class Api
         
         if($awardType !== null){
             $params['award_type'] = $awardType;
+        }        
+        
+        if ($broadSubjectArea !== null) {
+            $params['broad_subject_area'] = $broadSubjectArea;
         }        
         
         if($country !== null){
