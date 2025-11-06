@@ -236,6 +236,11 @@ class Api
         return $this->call('enquiry', 'POST', $data);
     }
     
+    public function trackSearchImpression(array $data)
+    {
+        return $this->call('tracksearchimpression', 'POST', $data);
+    }
+    
     /**
      * Returns the most relevant courses (along 
      * with variations) for the given search criteria.
