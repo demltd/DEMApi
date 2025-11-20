@@ -241,6 +241,12 @@ class Api
         return $this->call('tracksearchimpression', 'POST', $data);
     }
     
+    public function getCoursesByBroadSubjectAreaId(int $id)
+    {
+        return $this->call('search/coursesbybroadsubjectarea', static::METHOD_GET, 
+                ['broad_subject_area' => $id]);
+    }
+    
     /**
      * Returns the most relevant courses (along 
      * with variations) for the given search criteria.
