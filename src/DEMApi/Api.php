@@ -244,7 +244,7 @@ class Api
     public function getCoursesByBroadSubjectAreaId(int $id)
     {
         return $this->call('search/coursesbybroadsubjectarea', static::METHOD_GET, 
-                ['broad_subject_area' => $id]);
+            ['broad_subject_area' => $id, 'sid' => $this->siteId]);
     }
     
     /**
