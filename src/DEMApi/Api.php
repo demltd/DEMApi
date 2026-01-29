@@ -267,7 +267,7 @@ class Api
         $studyMode = null, $studyLevel = null, $destination = null, 
         $country = null, $durationMin = null, $durationMax = null, $awardType = null,
         $resultsListMode = null, $latitude = null, $longitude = null, $minDistance = null,
-        $maxDistance = null, $broadSubjectArea = null)
+        $maxDistance = null, $broadSubjectArea = null, $debugMode = false)
     {
         $params = array();
         
@@ -348,7 +348,9 @@ class Api
         
         $params['region'] = $this->regionId;
         
-        return $this->call('search', static::METHOD_GET, $params);
+        $action = $debugMode ? 'search/debug' : 'search';
+        
+        return $this->call($action, static::METHOD_GET, $params);
     }
     
     /**
