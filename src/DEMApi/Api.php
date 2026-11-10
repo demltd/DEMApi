@@ -204,6 +204,12 @@ class Api
         return $this->call("providers/$ident/courses/$cid/profiles/$sid/$description", static::METHOD_GET);
     }
     
+    public function getCourseApplyProfile($ident, $cid)
+    {
+        return $this->call("providers/$ident/courses/$cid/profiles/{$this->siteId}/apply_url",
+            static::METHOD_GET, array(), true);
+    }
+
     public function getOpenDays($page = 1, array $levels = null, $latitude = null,
         $longitude = null)
     {
@@ -363,7 +369,7 @@ class Api
      * @throws DEMAPI_IllegalArgumentException
      * @throws DEMAPI_ServerErrorException
      */
-    private function call($resource, $method, $params = array())
+    private function call($resource, $method, $params = array(), $applyLookup = false)
     {
         if($this->siteId === null){
             throw new \RuntimeException('site id must be set in order to use api');
@@ -426,10 +432,10 @@ class Api
         );
         
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $applyLookup ? 1 : 5);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $applyLookup ? 2 : 60);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // Disabled SSL Cert checks
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $applyLookup); // Verify TLS for the Apply lookup.
         
         $output = curl_exec($ch);
         
